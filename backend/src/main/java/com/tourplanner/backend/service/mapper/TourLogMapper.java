@@ -1,6 +1,6 @@
 package com.tourplanner.backend.service.mapper;
 
-import com.tourplanner.backend.model.TourLog;
+import com.tourplanner.backend.persistence.entity.TourLog;
 import com.tourplanner.backend.service.dto.TourLogDTO;
 import org.springframework.stereotype.Component;
 

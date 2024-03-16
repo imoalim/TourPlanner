@@ -1,4 +1,4 @@
-package com.tourplanner.backend.model;
+package com.tourplanner.backend.persistence.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
