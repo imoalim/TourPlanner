@@ -3,7 +3,8 @@ package com.tourplanner.backend.service.impl;
 import com.tourplanner.backend.persistence.entity.Tour;
 import com.tourplanner.backend.persistence.repository.TourRepository;
 import com.tourplanner.backend.service.dto.TourDTO;
-import com.tourplanner.backend.service.TourService;
+import com.tourplanner.backend.service.IGenericService;
+import com.tourplanner.backend.service.dto.TourLogDTO;
 import com.tourplanner.backend.service.mapper.TourMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -14,14 +15,20 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class TourServiceImpl implements TourService {
+public class TourServiceImpl implements IGenericService<TourDTO, Long> {
 
     private final TourRepository tourRepository;
 
     private final TourMapper tourMapper;
 
+    boolean checkIfTourExist(Long id){
+        if (!tourRepository.existsById(id)) {
+            throw new EntityNotFoundException("Tour not found for id " + id);
+        }
+        return true;
+    }
     @Override
-    public void createTour(TourDTO tourDTO) {
+    public TourDTO create(TourDTO tourDTO) {
         Tour tour = Tour.builder()
                 .name(tourDTO.getName())
                 .description(tourDTO.getDescription())
@@ -33,15 +40,16 @@ public class TourServiceImpl implements TourService {
                 .imageUrl(tourDTO.getImageUrl())
                 .build();
         tourRepository.save(tour);
+        return tourMapper.mapToDto(tour);
     }
 
     @Override
-    public List<TourDTO> getAllTours() {
+    public List<TourDTO> findAll() {
         return tourMapper.mapToDto(tourRepository.findAll());
     }
 
     @Override
-    public List<TourDTO> getTourById(Long id) {
+    public List<TourDTO> findById(Long id) {
         // Using Optional.map to convert the found Tour into a TourDTO, if present.
         // orElseThrow is used to throw an exception if the Tour is not found.
         checkIfTourExist(id);
@@ -52,14 +60,15 @@ public class TourServiceImpl implements TourService {
         // Since the method expects a list, we wrap the single TourDTO in a list.
         return Collections.singletonList(tourDTO);
     }
+
     @Override
-    public void deleteTourByID(Long id) {
+    public void deleteById(Long id) {
         checkIfTourExist(id);
         tourRepository.deleteById(id);
     }
 
     @Override
-    public TourDTO updateTour(Long id, TourDTO tourDTO) {
+    public TourDTO update(Long id, TourDTO tourDTO) {
         checkIfTourExist(id);
         // Retrieve the existing tour from the database
         Tour existingTour = tourRepository.findById(id)
@@ -79,11 +88,5 @@ public class TourServiceImpl implements TourService {
         tourRepository.save(existingTour);
 
         return tourMapper.mapToDto(existingTour);
-    }
-    boolean checkIfTourExist(Long id){
-        if (!tourRepository.existsById(id)) {
-            throw new EntityNotFoundException("Tour not found for id " + id);
-        }
-        return true;
     }
 }
