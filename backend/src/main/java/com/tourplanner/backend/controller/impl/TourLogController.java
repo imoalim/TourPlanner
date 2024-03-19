@@ -1,6 +1,7 @@
 package com.tourplanner.backend.controller.impl;
 
 import com.tourplanner.backend.controller.IGenericController;
+import com.tourplanner.backend.persistence.entity.TourLog;
 import com.tourplanner.backend.service.IGenericService;
 import com.tourplanner.backend.service.dto.TourLogDTO;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/tourLogs")
+@RequestMapping("/api/v1/tourLog")
 public class TourLogController implements IGenericController<TourLogDTO, Long> {
 
     private final IGenericService<TourLogDTO, Long> tourLogService;
@@ -29,20 +30,20 @@ public class TourLogController implements IGenericController<TourLogDTO, Long> {
     }
 
     @Override
-    @GetMapping("/{id}")
+    @GetMapping("/find{id}")
     public ResponseEntity<List> findById(@PathVariable Long id) {
         return ResponseEntity.ok(tourLogService.findById(id));
     }
 
     @Override
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete{id}")
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         tourLogService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
     @Override
-    @PutMapping("/{id}")
+    @PutMapping("/update{id}")
     public ResponseEntity<TourLogDTO> update(@PathVariable Long id, @RequestBody TourLogDTO dto) {
         TourLogDTO updatedTour = tourLogService.update(id, dto);
         return ResponseEntity.ok(updatedTour);
