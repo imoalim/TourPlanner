@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/tour")
+@RequestMapping("/api/v1/tours")
 public class TourController implements IGenericController<TourDTO, Long> {
 
 
@@ -30,20 +30,20 @@ public class TourController implements IGenericController<TourDTO, Long> {
     }
 
     @Override
-    @GetMapping("/find{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<List> findById(@PathVariable Long id) {
         return ResponseEntity.ok(tourService.findById(id));
     }
 
     @Override
-    @DeleteMapping("/delete{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         tourService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
     @Override
-    @PutMapping("/update{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<TourDTO> update(@PathVariable Long id, @RequestBody TourDTO tourDTO) {
         TourDTO updatedTour = tourService.update(id, tourDTO);
         return ResponseEntity.ok(updatedTour);
