@@ -14,7 +14,6 @@ import java.util.List;
 @RequestMapping("/api/v1/tours")
 public class TourController implements IGenericController<TourDTO, Long> {
 
-
     private final IGenericService<TourDTO, Long> tourService;
 
     @Override
@@ -23,6 +22,7 @@ public class TourController implements IGenericController<TourDTO, Long> {
         tourService.create(tourDTO);
         return ResponseEntity.ok().build();
     }
+
     @Override
     @GetMapping
     public ResponseEntity<List<TourDTO>> findAll() {

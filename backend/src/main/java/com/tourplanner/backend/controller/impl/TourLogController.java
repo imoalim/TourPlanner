@@ -15,6 +15,7 @@ import java.util.List;
 public class TourLogController implements IGenericController<TourLogDTO, Long> {
 
     private final IGenericService<TourLogDTO, Long> tourLogService;
+
     @Override
     @PostMapping
     public ResponseEntity<Void> create(@RequestBody TourLogDTO dto) {

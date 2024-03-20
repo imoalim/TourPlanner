@@ -17,15 +17,15 @@ import java.util.List;
 @Service
 public class TourLogServiceImpl implements IGenericService<TourLogDTO, Long> {
 
-    private final TourLogRepository tourLogRepo;
+    private final TourLogRepository tourLogRepository;
+
     private final TourRepository tourRepository;
 
     private final TourLogMapper tourLogMapper;
-    boolean checkIfTourExist(Long id){
-        if (!tourLogRepo.existsById(id)) {
-            throw new EntityNotFoundException("Tour not found for id " + id);
+    void checkIfTourLogExist(Long id){
+        if (!tourLogRepository.existsById(id)) {
+            throw new EntityNotFoundException("TourLog not found for id " + id);
         }
-        return true;
     }
 
     @Override
@@ -43,22 +43,22 @@ public class TourLogServiceImpl implements IGenericService<TourLogDTO, Long> {
                 .tour(tour)
                 .build();
 
-        tourLog = tourLogRepo.save(tourLog);
+        tourLog = tourLogRepository.save(tourLog);
         return tourLogMapper.mapToDto(tourLog);
     }
 
 
     @Override
     public List<TourLogDTO> findAll() {
-        return tourLogMapper.mapToDto(tourLogRepo.findAll());
+        return tourLogMapper.mapToDto(tourLogRepository.findAll());
     }
 
     @Override
     public List<TourLogDTO> findById(Long id) {
-        checkIfTourExist(id);
-        TourLogDTO tourLogDTO = tourLogRepo.findById(id)
+        checkIfTourLogExist(id);
+        TourLogDTO tourLogDTO = tourLogRepository.findById(id)
                 .map(tourLogMapper::mapToDto)
-                .orElseThrow(() -> new EntityNotFoundException("Tour not found for id " + id));
+                .orElseThrow(() -> new EntityNotFoundException("TourLog not found for id " + id));
 
         // Since the method expects a list, we wrap the single TourDTO in a list.
         return Collections.singletonList(tourLogDTO);
@@ -66,16 +66,16 @@ public class TourLogServiceImpl implements IGenericService<TourLogDTO, Long> {
 
     @Override
     public void deleteById(Long id) {
-        checkIfTourExist(id);
-        tourLogRepo.deleteById(id);
+        checkIfTourLogExist(id);
+        tourLogRepository.deleteById(id);
     }
 
     @Override
     public TourLogDTO update(Long id, TourLogDTO dto) {
-        TourLog existingTourLog = tourLogRepo.findById(id)
+        TourLog existingTourLog = tourLogRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("TourLog not found for id " + id));
 
-        // Update der Tour, falls die tourId im DTO anders ist
+        // Update the Tour, if the tourId in DTO is different
         if (!existingTourLog.getTour().getId().equals(dto.getTourId())) {
             Tour tour = tourRepository.findById(dto.getTourId())
                     .orElseThrow(() -> new EntityNotFoundException("Tour not found for id " + dto.getTourId()));
@@ -89,7 +89,7 @@ public class TourLogServiceImpl implements IGenericService<TourLogDTO, Long> {
         existingTourLog.setTotalTime(dto.getTotalTime());
         existingTourLog.setRating(dto.getRating());
 
-        tourLogRepo.save(existingTourLog);
+        tourLogRepository.save(existingTourLog);
         return tourLogMapper.mapToDto(existingTourLog);
     }
 }
