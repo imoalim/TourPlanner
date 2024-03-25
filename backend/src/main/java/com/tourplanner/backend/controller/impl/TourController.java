@@ -1,8 +1,8 @@
 package com.tourplanner.backend.controller.impl;
 
-import com.tourplanner.backend.controller.IGenericController;
+import com.tourplanner.backend.controller.GenericController;
 import com.tourplanner.backend.service.dto.TourDTO;
-import com.tourplanner.backend.service.IGenericService;
+import com.tourplanner.backend.service.GenericService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,9 +12,9 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/tours")
-public class TourController implements IGenericController<TourDTO, Long> {
+public class TourController implements GenericController<TourDTO, Long> {
 
-    private final IGenericService<TourDTO, Long> tourService;
+    private final GenericService<TourDTO, Long> tourService;
 
     @Override
     @PostMapping
@@ -31,7 +31,7 @@ public class TourController implements IGenericController<TourDTO, Long> {
 
     @Override
     @GetMapping("/{id}")
-    public ResponseEntity<List> findById(@PathVariable Long id) {
+    public ResponseEntity<List<TourDTO>> findById(@PathVariable Long id) {
         return ResponseEntity.ok(tourService.findById(id));
     }
 
@@ -39,7 +39,7 @@ public class TourController implements IGenericController<TourDTO, Long> {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         tourService.deleteById(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
     }
 
     @Override
