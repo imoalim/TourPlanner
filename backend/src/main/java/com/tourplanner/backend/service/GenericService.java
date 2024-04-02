@@ -2,7 +2,7 @@ package com.tourplanner.backend.service;
 
 import java.util.List;
 
-public interface IGenericService <T, ID> {
+public interface GenericService<T, ID> {
     T create(T dto);
     List<T> findAll();
     List<T> findById(ID id);
