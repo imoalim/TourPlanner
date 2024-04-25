@@ -19,7 +19,7 @@ export class TourService {
     return this.http.get<Tour>(`${this.apiServerUrl}/api/v1/tours/${tourId}`)
   }
   public addTour(tour:Tour): Observable<Tour>{
-    return this.http.post<Tour>('${this.apiServerUrl}/api/v1/tours',tour)
+   return this.http.post<Tour>(`${this.apiServerUrl}/api/v1/tours`, tour);
   }
   public removeTour(tourId:number): Observable<void>{
     return this.http.delete<void>(`${this.apiServerUrl}/api/v1/tours/${tourId}`)
