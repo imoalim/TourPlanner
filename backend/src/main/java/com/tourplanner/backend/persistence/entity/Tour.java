@@ -28,6 +28,7 @@ public class Tour {
     private Double distance;
     private Duration estimatedTime;
     private String imageUrl;
+    //the image, the distance, and the time should be retrieved by a REST request using the OpenRouteservice.org APIs and OpenStreetMap Tile Server
 
     @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TourLog> logs = new ArrayList<>();
