@@ -4,10 +4,12 @@ import com.tourplanner.backend.persistence.entity.Tour;
 import com.tourplanner.backend.persistence.repository.TourRepository;
 import com.tourplanner.backend.service.dto.TourDTO;
 import com.tourplanner.backend.service.GenericService;
+import com.tourplanner.backend.service.map.GeocodeRetriever;
 import com.tourplanner.backend.service.mapper.TourMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.util.Collections;
 import java.util.List;
@@ -20,6 +22,8 @@ public class TourServiceImpl implements GenericService<TourDTO, Long> {
 
     private final TourMapper tourMapper;
 
+    private final GeocodeRetriever geocodeRetriever;
+
     void checkIfTourExist(Long id){
         if (!tourRepository.existsById(id))
             throw new EntityNotFoundException("Tour not found for id " + id);
@@ -27,6 +31,8 @@ public class TourServiceImpl implements GenericService<TourDTO, Long> {
 
     @Override
     public TourDTO create(TourDTO tourDTO) {
+        Mono<String[]> geoData = geocodeRetriever.getCoordinates(tourDTO.getFromLocation());
+        geoData.subscribe(System.out::println);
         Tour tour = Tour.builder()
                 .name(tourDTO.getName())
                 .description(tourDTO.getDescription())
