@@ -2,15 +2,17 @@ package com.tourplanner.backend.service.impl;
 
 import com.tourplanner.backend.persistence.entity.Tour;
 import com.tourplanner.backend.persistence.repository.TourRepository;
-import com.tourplanner.backend.service.dto.TourDTO;
 import com.tourplanner.backend.service.GenericService;
-import com.tourplanner.backend.service.map.GeocodeRetriever;
+import com.tourplanner.backend.service.dto.TourDTO;
+import com.tourplanner.backend.service.ors.GeocodeRetriever;
+import com.tourplanner.backend.service.ors.ORSService;
+import com.tourplanner.backend.service.ors.OrsParameters;
 import com.tourplanner.backend.service.mapper.TourMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -24,6 +26,8 @@ public class TourServiceImpl implements GenericService<TourDTO, Long> {
 
     private final GeocodeRetriever geocodeRetriever;
 
+    private final ORSService orsService;
+
     void checkIfTourExist(Long id){
         if (!tourRepository.existsById(id))
             throw new EntityNotFoundException("Tour not found for id " + id);
@@ -31,17 +35,21 @@ public class TourServiceImpl implements GenericService<TourDTO, Long> {
 
     @Override
     public TourDTO create(TourDTO tourDTO) {
-        Mono<String[]> geoData = geocodeRetriever.getCoordinates(tourDTO.getFromLocation());
-        geoData.subscribe(System.out::println);
+        OrsParameters orsParameters = null;
+        try {
+            orsParameters = orsService.getOrsParameters(tourDTO.getFromLocation(), tourDTO.getToLocation(), tourDTO.getTransportType());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         Tour tour = Tour.builder()
                 .name(tourDTO.getName())
                 .description(tourDTO.getDescription())
                 .fromLocation(tourDTO.getFromLocation())
                 .toLocation(tourDTO.getToLocation())
                 .transportType(tourDTO.getTransportType())
-                .distance(tourDTO.getDistance())
-                .estimatedTime(tourDTO.getEstimatedTime())
-                .imageUrl(tourDTO.getImageUrl())
+                .distance(orsParameters.distance())
+                .estimatedTime(orsParameters.estimatedTime())
+                .imageUrl(orsParameters.imageUrl())
                 .build();
         tourRepository.save(tour);
         return tourMapper.mapToDto(tour);

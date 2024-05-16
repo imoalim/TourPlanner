@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 
 @Entity
@@ -23,7 +22,7 @@ public class TourLog {
     private String comment;
     private String difficulty;
     private Double distance;
-    private Duration totalTime;
+    private Long totalTime;
     private Double rating;
 
     @ManyToOne

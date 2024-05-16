@@ -5,8 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.Duration;
-
 @Data
 @Builder
 @AllArgsConstructor
@@ -19,6 +17,6 @@ public class TourDTO {
     private String toLocation;
     private String transportType;
     private Double distance;
-    private Duration estimatedTime;
+    private Double estimatedTime;
     private String imageUrl;
 }

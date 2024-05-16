@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +25,7 @@ public class Tour {
     private String toLocation;
     private String transportType;
     private Double distance;
-    private Duration estimatedTime;
+    private Double estimatedTime;
     private String imageUrl;
     //the image, the distance, and the time should be retrieved by a REST request using the OpenRouteservice.org APIs and OpenStreetMap Tile Server
 
