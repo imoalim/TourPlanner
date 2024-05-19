@@ -9,7 +9,6 @@ public class Util {
         for (String string : strings) {
             joiner.add(string);
         }
-        System.out.println(joiner);
         return joiner.toString();
     }
 

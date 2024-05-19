@@ -1,5 +1,7 @@
 package com.tourplanner.backend.persistence.entity;
 
+import com.tourplanner.backend.persistence.attributes.ChildFriendliness;
+import com.tourplanner.backend.persistence.attributes.Popularity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,7 +29,12 @@ public class Tour {
     private Double distance;
     private Double estimatedTime;
     private String imageUrl;
-    //the image, the distance, and the time should be retrieved by a REST request using the OpenRouteservice.org APIs and OpenStreetMap Tile Server
+
+    @Enumerated(EnumType.STRING)
+    private Popularity popularity;
+
+    @Enumerated(EnumType.STRING)
+    private ChildFriendliness childFriendliness;
 
     @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TourLog> logs = new ArrayList<>();

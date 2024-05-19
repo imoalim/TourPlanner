@@ -1,14 +1,14 @@
 package com.tourplanner.backend.service.mapper;
 
 import com.tourplanner.backend.persistence.entity.Tour;
-import com.tourplanner.backend.service.dto.TourDTO;
+import com.tourplanner.backend.service.dto.TourResponseDTO;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TourMapper extends AbstractMapper<Tour, TourDTO> {
+public class TourMapper extends AbstractMapper<Tour, TourResponseDTO> {
     @Override
-    public TourDTO mapToDto(Tour sourceTour) {
-        return TourDTO.builder()
+    public TourResponseDTO mapToDto(Tour sourceTour) {
+        return TourResponseDTO.builder()
                 .id(sourceTour.getId())
                 .name(sourceTour.getName())
                 .description(sourceTour.getDescription())

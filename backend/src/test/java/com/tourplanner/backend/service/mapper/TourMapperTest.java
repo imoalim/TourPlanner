@@ -1,13 +1,11 @@
 package com.tourplanner.backend.service.mapper;
 
 import com.tourplanner.backend.persistence.entity.Tour;
-import com.tourplanner.backend.service.dto.TourDTO;
+import com.tourplanner.backend.service.dto.TourResponseDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.time.Duration;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TourMapperTest {
 
@@ -29,22 +27,22 @@ class TourMapperTest {
                 .toLocation("Riverside Park")
                 .transportType("Bike")
                 .distance(5.0)
-                .estimatedTime(Duration.parse("PT1H"))
+                .estimatedTime(3600.00)
                 .imageUrl("https://example.com/path/to/image")
                 .build();
 
         // When
-        TourDTO tourDTO = tourMapper.mapToDto(tour);
+        TourResponseDTO tourResponseDTO = tourMapper.mapToDto(tour);
 
         // Then
-        assertEquals(tourDTO.getId(), tour.getId());
-        assertEquals(tourDTO.getName(), tour.getName());
-        assertEquals(tourDTO.getDescription(), tour.getDescription());
-        assertEquals(tourDTO.getFromLocation(), tour.getFromLocation());
-        assertEquals(tourDTO.getToLocation(), tour.getToLocation());
-        assertEquals(tourDTO.getTransportType(), tour.getTransportType());
-        assertEquals(tourDTO.getDistance(), tour.getDistance());
-        assertEquals(tourDTO.getEstimatedTime(), tour.getEstimatedTime());
-        assertEquals(tourDTO.getImageUrl(), tour.getImageUrl());
+        assertEquals(tourResponseDTO.getId(), tour.getId());
+        assertEquals(tourResponseDTO.getName(), tour.getName());
+        assertEquals(tourResponseDTO.getDescription(), tour.getDescription());
+        assertEquals(tourResponseDTO.getFromLocation(), tour.getFromLocation());
+        assertEquals(tourResponseDTO.getToLocation(), tour.getToLocation());
+        assertEquals(tourResponseDTO.getTransportType(), tour.getTransportType());
+        assertEquals(tourResponseDTO.getDistance(), tour.getDistance());
+        assertEquals(tourResponseDTO.getEstimatedTime(), tour.getEstimatedTime());
+        assertEquals(tourResponseDTO.getImageUrl(), tour.getImageUrl());
     }
 }

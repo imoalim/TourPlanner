@@ -11,18 +11,19 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class TourLogServiceImpl implements GenericService<TourLogDTO, Long> {
+public class TourLogServiceImpl implements GenericService<TourLogDTO, TourLogDTO, Long> {
 
     private final TourLogRepository tourLogRepository;
 
+    private final TourLogMapper tourLogMapper;
+
     private final TourRepository tourRepository;
 
-    private final TourLogMapper tourLogMapper;
+    private final TourServiceImpl tourServiceImpl;
 
     void checkIfTourLogExist(Long id){
         if (!tourLogRepository.existsById(id))
@@ -45,6 +46,8 @@ public class TourLogServiceImpl implements GenericService<TourLogDTO, Long> {
                 .build();
 
         tourLog = tourLogRepository.save(tourLog);
+        tourServiceImpl.updateComputedTourAttributes(tour.getId());
+
         return tourLogMapper.mapToDto(tourLog);
     }
 
@@ -55,20 +58,18 @@ public class TourLogServiceImpl implements GenericService<TourLogDTO, Long> {
     }
 
     @Override
-    public List<TourLogDTO> findById(Long id) {
+    public TourLogDTO findById(Long id) {
         checkIfTourLogExist(id);
-        TourLogDTO tourLogDTO = tourLogRepository.findById(id)
+        return tourLogRepository.findById(id)
                 .map(tourLogMapper::mapToDto)
                 .orElseThrow(() -> new EntityNotFoundException("TourLog not found for id " + id));
-
-        // Since the method expects a list, we wrap the single TourDTO in a list.
-        return Collections.singletonList(tourLogDTO);
     }
 
     @Override
-    public void deleteById(Long id) {
-        checkIfTourLogExist(id);
-        tourLogRepository.deleteById(id);
+    public void deleteById(Long tourLogId) {
+        checkIfTourLogExist(tourLogId);
+        tourServiceImpl.updateComputedTourAttributes(getTourIDFromTourLogID(tourLogId));
+        tourLogRepository.deleteById(tourLogId);
     }
 
     @Override
@@ -91,6 +92,15 @@ public class TourLogServiceImpl implements GenericService<TourLogDTO, Long> {
         existingTourLog.setRating(tourLogDTO.getRating());
 
         tourLogRepository.save(existingTourLog);
+        tourServiceImpl.updateComputedTourAttributes(existingTourLog.getTour().getId());
+
         return tourLogMapper.mapToDto(existingTourLog);
+    }
+
+    public Long getTourIDFromTourLogID(Long tourLogId) {
+        TourLog tourLog = tourLogRepository.findById(tourLogId)
+                .orElseThrow(() -> new EntityNotFoundException("TourLog not found for tourLogId " + tourLogId));
+
+        return tourLog.getTour().getId();
     }
 }

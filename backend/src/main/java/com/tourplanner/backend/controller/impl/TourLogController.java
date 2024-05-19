@@ -12,13 +12,13 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/tourLogs")
-public class TourLogController implements GenericController<TourLogDTO, Long> {
+public class TourLogController implements GenericController<TourLogDTO, TourLogDTO, Long> {
 
-    private final GenericService<TourLogDTO, Long> tourLogService;
+    private final GenericService<TourLogDTO, TourLogDTO, Long> tourLogService;
 
     @Override
     @PostMapping
-    public ResponseEntity<Void> create(@RequestBody TourLogDTO tourLogDTO) {
+    public ResponseEntity<TourLogDTO> create(@RequestBody TourLogDTO tourLogDTO) {
         tourLogService.create(tourLogDTO);
         return ResponseEntity.ok().build();
     }
@@ -31,7 +31,7 @@ public class TourLogController implements GenericController<TourLogDTO, Long> {
 
     @Override
     @GetMapping("/{id}")
-    public ResponseEntity<List<TourLogDTO>> findById(@PathVariable Long id) {
+    public ResponseEntity<TourLogDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok(tourLogService.findById(id));
     }
 

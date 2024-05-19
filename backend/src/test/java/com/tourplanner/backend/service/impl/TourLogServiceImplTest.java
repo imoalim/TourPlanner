@@ -4,7 +4,7 @@ import com.tourplanner.backend.persistence.entity.Tour;
 import com.tourplanner.backend.persistence.entity.TourLog;
 import com.tourplanner.backend.persistence.repository.TourLogRepository;
 import com.tourplanner.backend.persistence.repository.TourRepository;
-import com.tourplanner.backend.service.dto.TourDTO;
+import com.tourplanner.backend.service.dto.TourRequestDTO;
 import com.tourplanner.backend.service.dto.TourLogDTO;
 import com.tourplanner.backend.service.mapper.TourLogMapper;
 import jakarta.persistence.EntityNotFoundException;
@@ -38,7 +38,7 @@ class TourLogServiceImplTest {
     private TourLogMapper tourLogMapper;
 
     private static Tour tour;
-    private static TourDTO tourDTO;
+    private static TourRequestDTO tourRequestDTO;
     private static TourLog tourLog;
     private static TourLogDTO tourLogDTO;
 
@@ -59,7 +59,7 @@ class TourLogServiceImplTest {
                 .imageUrl("https://example.com/path/to/image")
                 .build();
 
-        tourDTO = TourDTO.builder()
+        tourRequestDTO = TourRequestDTO.builder()
                 .id(1L)
                 .name("Morning Bike Ride")
                 .description("A leisurely bike ride through the city parks.")
