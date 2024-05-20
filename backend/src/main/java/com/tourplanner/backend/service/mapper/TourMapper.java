@@ -18,6 +18,8 @@ public class TourMapper extends AbstractMapper<Tour, TourResponseDTO> {
                 .distance(sourceTour.getDistance())
                 .estimatedTime(sourceTour.getEstimatedTime())
                 .imageUrl(sourceTour.getImageUrl())
+                .popularity(sourceTour.getPopularity())
+                .childFriendliness(sourceTour.getChildFriendliness())
                 .build();
     }
 }

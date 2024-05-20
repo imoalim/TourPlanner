@@ -1,7 +1,7 @@
 package com.tourplanner.backend.service.dto;
 
-import com.tourplanner.backend.persistence.attributes.ChildFriendliness;
-import com.tourplanner.backend.persistence.attributes.Popularity;
+import com.tourplanner.backend.persistence.attributes.tour.ChildFriendliness;
+import com.tourplanner.backend.persistence.attributes.tour.Popularity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

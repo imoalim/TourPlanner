@@ -1,5 +1,6 @@
 package com.tourplanner.backend.service.dto;
 
+import com.tourplanner.backend.persistence.attributes.tourLog.Difficulty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,9 +16,9 @@ public class TourLogDTO {
     private Long id;
     private LocalDateTime dateTime;
     private String comment;
-    private String difficulty;
+    private Difficulty difficulty;
     private Double distance;
-    private Long totalTime;
+    private Double totalTime;
     private Double rating;
     private Long tourId;
 }

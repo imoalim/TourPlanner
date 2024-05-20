@@ -1,7 +1,7 @@
 package com.tourplanner.backend.persistence.entity;
 
-import com.tourplanner.backend.persistence.attributes.ChildFriendliness;
-import com.tourplanner.backend.persistence.attributes.Popularity;
+import com.tourplanner.backend.persistence.attributes.tour.ChildFriendliness;
+import com.tourplanner.backend.persistence.attributes.tour.Popularity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

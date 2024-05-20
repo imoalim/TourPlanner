@@ -1,7 +1,7 @@
 package com.tourplanner.backend.service.impl;
 
-import com.tourplanner.backend.persistence.attributes.ChildFriendliness;
-import com.tourplanner.backend.persistence.attributes.Popularity;
+import com.tourplanner.backend.persistence.attributes.tour.ChildFriendliness;
+import com.tourplanner.backend.persistence.attributes.tour.Popularity;
 import com.tourplanner.backend.persistence.entity.Tour;
 import com.tourplanner.backend.persistence.entity.TourLog;
 import com.tourplanner.backend.persistence.repository.TourRepository;
@@ -141,13 +141,54 @@ public class TourServiceImpl implements GenericService<TourRequestDTO, TourRespo
         } else if(amountOfTourLogs == 3 || amountOfTourLogs == 4) {
             return Popularity.MEDIUM;
         } else if(amountOfTourLogs >= 5) {
-            return Popularity.MEDIUM;
+            return Popularity.HIGH;
         }
 
         return Popularity.UNKNOWN;
     }
 
     private ChildFriendliness calculateTourChildFriendliness(List<TourLog> tourLogs) {
+        int amountOfTourLogs = tourLogs.size();
+        int overallTourPoints = 0;
 
+        for(TourLog tourLog : tourLogs) {
+            switch(tourLog.getDifficulty()) {
+                case EASY: overallTourPoints += 2; break;
+                case MODERATE : overallTourPoints += 1; break;
+                case HARD :
+                default: break;
+            }
+            System.out.println("Overall tour points after difficulty check: " + overallTourPoints);
+
+            double totalTourTime = tourLog.getTotalTime();
+            if(totalTourTime <= 1800) {
+                overallTourPoints += 2;
+            } else if (overallTourPoints > 1800 && totalTourTime <= 3600) {
+                overallTourPoints += 1;
+            }
+
+            System.out.println("Overall tour points after total time check: " + overallTourPoints);
+
+            double totalTourDistance = tourLog.getDistance();
+            if(totalTourDistance <= 3500) {
+                overallTourPoints += 2;
+            } else if (totalTourDistance > 3500 && totalTourDistance <= 7000) {
+                overallTourPoints += 1;
+            }
+            System.out.println("Overall tour points after distance check: " + overallTourPoints);
+        }
+
+        double weightedTourPoints = (double) overallTourPoints / amountOfTourLogs;
+        System.out.println("Weighted tour points: " + weightedTourPoints);
+
+        if(weightedTourPoints >= 5) {
+            return ChildFriendliness.HIGH;
+        } else if (weightedTourPoints < 5 && overallTourPoints >= 3) {
+            return ChildFriendliness.MEDIUM;
+        } else if (weightedTourPoints < 3 && overallTourPoints >= 0) {
+            return ChildFriendliness.LOW;
+        }
+
+        return ChildFriendliness.UNKNOWN;
     }
 }
