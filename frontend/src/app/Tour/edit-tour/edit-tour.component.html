@@ -1,1 +1,77 @@
-<p>edit-tour works!</p>
+<div class="container-xl">
+  <div class="table-responsive">
+    <div class="table-wrapper">
+      <div class="table-title">
+        <div class="row">
+          <div class="col-sm-6">
+            <h4><b>Edit Tour</b></h4>
+          </div>
+          <div class="col-sm-6">
+            <a href="#" routerLink="/Home" class="btn btn-success back">
+              <i class='fas fa-arrow-circle-left'></i> Back
+            </a>
+          </div>
+        </div>
+      </div>
+      <form #tourForm="ngForm">
+        <div class="table-content">
+          <div class="form-group p-10 row">
+            <div class="col-sm-3">
+              <label for="name" class="p-t-b-10">Name<span class="requiredStar">*</span></label>
+            </div>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" id="name" required maxlength="255" [(ngModel)]="editTourForm.name" name="name" #name="ngModel">
+              <div *ngIf="name.errors && isSubmitted" class="alert alert-danger validationError">
+                <div [hidden]="!name.errors?.['required']">Name is required</div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group p-10 row">
+            <div class="col-sm-3">
+              <label for="description" class="p-t-b-10">Description</label>
+            </div>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" id="description" maxlength="255" [(ngModel)]="editTourForm.description" name="description" #description="ngModel">
+            </div>
+          </div>
+          <div class="form-group p-10 row">
+            <div class="col-sm-3">
+              <label for="fromLocation" class="p-t-b-10">Location From<span class="requiredStar">*</span></label>
+            </div>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" id="fromLocation" required maxlength="255" [(ngModel)]="editTourForm.fromLocation" name="fromLocation" #fromLocation="ngModel">
+              <div *ngIf="fromLocation.errors && isSubmitted" class="alert alert-danger validationError">
+                <div [hidden]="!fromLocation.errors?.['required']">Location From is required</div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group p-10 row">
+            <div class="col-sm-3">
+              <label for="toLocation" class="p-t-b-10">Location To<span class="requiredStar">*</span></label>
+            </div>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" id="toLocation" required maxlength="255" [(ngModel)]="editTourForm.toLocation" name="toLocation" #toLocation="ngModel">
+              <div *ngIf="toLocation.errors && isSubmitted" class="alert alert-danger validationError">
+                <div [hidden]="!toLocation.errors?.['required']">Location To is required</div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group p-10 row">
+            <div class="col-sm-3">
+              <label for="transportType" class="p-t-b-10">Transport Type<span class="requiredStar">*</span></label>
+            </div>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" id="transportType" required maxlength="255" [(ngModel)]="editTourForm.transportType" name="transportType" #transportType="ngModel">
+              <div *ngIf="transportType.errors && isSubmitted" class="alert alert-danger validationError">
+                <div [hidden]="!transportType.errors?.['required']">Transport Type is required</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="table-footer">
+          <button type="submit" class="btn btn-primary" (click)="updateTour(tourForm.valid ?? false)">Update</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
