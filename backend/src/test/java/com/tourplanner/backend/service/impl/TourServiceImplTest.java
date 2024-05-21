@@ -2,7 +2,7 @@
 //
 //import com.tourplanner.backend.persistence.entity.Tour;
 //import com.tourplanner.backend.persistence.repository.TourRepository;
-//import com.tourplanner.backend.service.dto.TourRequestDTO;
+//import com.tourplanner.backend.service.dto.tour.TourRequestDTO;
 //import com.tourplanner.backend.service.mapper.TourMapper;
 //import org.junit.jupiter.api.AfterEach;
 //import org.junit.jupiter.api.BeforeEach;

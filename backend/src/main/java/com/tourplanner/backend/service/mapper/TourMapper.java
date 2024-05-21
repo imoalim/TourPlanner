@@ -1,7 +1,7 @@
 package com.tourplanner.backend.service.mapper;
 
 import com.tourplanner.backend.persistence.entity.Tour;
-import com.tourplanner.backend.service.dto.TourResponseDTO;
+import com.tourplanner.backend.service.dto.tour.TourResponseDTO;
 import org.springframework.stereotype.Component;
 
 @Component

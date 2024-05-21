@@ -2,7 +2,7 @@ package com.tourplanner.backend.service.mapper;
 
 import com.tourplanner.backend.persistence.entity.Tour;
 import com.tourplanner.backend.persistence.entity.TourLog;
-import com.tourplanner.backend.service.dto.TourLogDTO;
+import com.tourplanner.backend.service.dto.tourLog.TourLogDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

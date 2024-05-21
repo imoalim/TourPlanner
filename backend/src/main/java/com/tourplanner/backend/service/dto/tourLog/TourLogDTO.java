@@ -1,4 +1,4 @@
-package com.tourplanner.backend.service.dto;
+package com.tourplanner.backend.service.dto.tourLog;
 
 import com.tourplanner.backend.persistence.attributes.tourLog.Difficulty;
 import lombok.AllArgsConstructor;

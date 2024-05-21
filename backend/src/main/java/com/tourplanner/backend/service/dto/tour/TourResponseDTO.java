@@ -1,4 +1,4 @@
-package com.tourplanner.backend.service.dto;
+package com.tourplanner.backend.service.dto.tour;
 
 import com.tourplanner.backend.persistence.attributes.tour.ChildFriendliness;
 import com.tourplanner.backend.persistence.attributes.tour.Popularity;

@@ -2,7 +2,7 @@ package com.tourplanner.backend.controller.impl;
 
 import com.tourplanner.backend.controller.GenericController;
 import com.tourplanner.backend.service.GenericService;
-import com.tourplanner.backend.service.dto.TourLogDTO;
+import com.tourplanner.backend.service.dto.tourLog.TourLogDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

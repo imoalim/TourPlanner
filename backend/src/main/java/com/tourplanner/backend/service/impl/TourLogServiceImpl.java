@@ -5,7 +5,7 @@ import com.tourplanner.backend.persistence.entity.TourLog;
 import com.tourplanner.backend.persistence.repository.TourLogRepository;
 import com.tourplanner.backend.persistence.repository.TourRepository;
 import com.tourplanner.backend.service.GenericService;
-import com.tourplanner.backend.service.dto.TourLogDTO;
+import com.tourplanner.backend.service.dto.tourLog.TourLogDTO;
 import com.tourplanner.backend.service.mapper.TourLogMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;

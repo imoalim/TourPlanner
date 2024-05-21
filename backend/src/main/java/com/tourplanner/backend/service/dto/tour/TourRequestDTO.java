@@ -1,4 +1,4 @@
-package com.tourplanner.backend.service.dto;
+package com.tourplanner.backend.service.dto.tour;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
