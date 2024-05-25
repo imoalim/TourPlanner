@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TourResponseDTO {
+public class TourDTO {
     private Long id;
     private String name;
     private String description;

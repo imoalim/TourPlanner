@@ -7,8 +7,7 @@ import com.tourplanner.backend.persistence.entity.TourLog;
 import com.tourplanner.backend.persistence.repository.TourRepository;
 import com.tourplanner.backend.service.GenericService;
 import com.tourplanner.backend.service.dto.tourLog.TourLogDTO;
-import com.tourplanner.backend.service.dto.tour.TourRequestDTO;
-import com.tourplanner.backend.service.dto.tour.TourResponseDTO;
+import com.tourplanner.backend.service.dto.tour.TourDTO;
 import com.tourplanner.backend.service.mapper.TourLogMapper;
 import com.tourplanner.backend.service.mapper.TourMapper;
 import com.tourplanner.backend.service.ors.ORSService;
@@ -22,7 +21,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class TourServiceImpl implements GenericService<TourRequestDTO, TourResponseDTO, Long> {
+public class TourServiceImpl implements GenericService<TourDTO, Long> {
 
     private final TourRepository tourRepository;
 
@@ -38,7 +37,7 @@ public class TourServiceImpl implements GenericService<TourRequestDTO, TourRespo
     }
 
     @Override
-    public TourResponseDTO create(TourRequestDTO tourRequestDTO) {
+    public TourDTO create(TourDTO tourRequestDTO) {
         OrsParameters orsParameters;
         try {
             orsParameters = orsService.getOrsParameters(tourRequestDTO.getFromLocation(), tourRequestDTO.getToLocation(), tourRequestDTO.getTransportType());
@@ -62,12 +61,12 @@ public class TourServiceImpl implements GenericService<TourRequestDTO, TourRespo
     }
 
     @Override
-    public List<TourResponseDTO> findAll() {
+    public List<TourDTO> findAll() {
         return tourMapper.mapToDto(tourRepository.findAll());
     }
 
     @Override
-    public TourResponseDTO findById(Long id) {
+    public TourDTO findById(Long id) {
         // Using Optional.map to convert the found Tour into a TourDTO, if present.
         // orElseThrow is used to throw an exception if the Tour is not found.
         checkIfTourExist(id);
@@ -84,7 +83,7 @@ public class TourServiceImpl implements GenericService<TourRequestDTO, TourRespo
     }
 
     @Override
-    public TourResponseDTO update(Long id, TourRequestDTO tourRequestDTO) {
+    public TourDTO update(Long id, TourDTO tourRequestDTO) {
         checkIfTourExist(id);
         // Retrieve the existing tour from the database
         Tour existingTour = tourRepository.findById(id)
@@ -148,38 +147,10 @@ public class TourServiceImpl implements GenericService<TourRequestDTO, TourRespo
     }
 
     private ChildFriendliness calculateTourChildFriendliness(List<TourLog> tourLogs) {
+        int overallTourPoints = getOverallTourPoints(tourLogs);
         int amountOfTourLogs = tourLogs.size();
-        int overallTourPoints = 0;
-
-        for(TourLog tourLog : tourLogs) {
-            switch(tourLog.getDifficulty()) {
-                case EASY: overallTourPoints += 2; break;
-                case MODERATE : overallTourPoints += 1; break;
-                case HARD :
-                default: break;
-            }
-            System.out.println("Overall tour points after difficulty check: " + overallTourPoints);
-
-            double totalTourTime = tourLog.getTotalTime();
-            if(totalTourTime <= 1800) {
-                overallTourPoints += 2;
-            } else if (overallTourPoints > 1800 && totalTourTime <= 3600) {
-                overallTourPoints += 1;
-            }
-
-            System.out.println("Overall tour points after total time check: " + overallTourPoints);
-
-            double totalTourDistance = tourLog.getDistance();
-            if(totalTourDistance <= 3500) {
-                overallTourPoints += 2;
-            } else if (totalTourDistance > 3500 && totalTourDistance <= 7000) {
-                overallTourPoints += 1;
-            }
-            System.out.println("Overall tour points after distance check: " + overallTourPoints);
-        }
 
         double weightedTourPoints = (double) overallTourPoints / amountOfTourLogs;
-        System.out.println("Weighted tour points: " + weightedTourPoints);
 
         if(weightedTourPoints >= 5) {
             return ChildFriendliness.HIGH;
@@ -190,5 +161,33 @@ public class TourServiceImpl implements GenericService<TourRequestDTO, TourRespo
         }
 
         return ChildFriendliness.UNKNOWN;
+    }
+
+    private int getOverallTourPoints(List<TourLog> tourLogs) {
+        int overallTourPoints = 0;
+
+        for(TourLog tourLog : tourLogs) {
+            switch(tourLog.getDifficulty()) {
+                case EASY: overallTourPoints += 2; break;
+                case MODERATE : overallTourPoints += 1; break;
+                case HARD :
+                default: break;
+            }
+
+            double totalTourTime = tourLog.getTotalTime();
+            if(totalTourTime <= 1800) {
+                overallTourPoints += 2;
+            } else if (totalTourTime > 1800 && totalTourTime <= 3600) {
+                overallTourPoints += 1;
+            }
+
+            double totalTourDistance = tourLog.getDistance();
+            if(totalTourDistance <= 3500) {
+                overallTourPoints += 2;
+            } else if (totalTourDistance > 3500 && totalTourDistance <= 7000) {
+                overallTourPoints += 1;
+            }
+        }
+        return overallTourPoints;
     }
 }

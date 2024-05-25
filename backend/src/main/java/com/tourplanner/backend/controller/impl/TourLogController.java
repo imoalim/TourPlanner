@@ -12,9 +12,9 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/tourLogs")
-public class TourLogController implements GenericController<TourLogDTO, TourLogDTO, Long> {
+public class TourLogController implements GenericController<TourLogDTO, Long> {
 
-    private final GenericService<TourLogDTO, TourLogDTO, Long> tourLogService;
+    private final GenericService<TourLogDTO, Long> tourLogService;
 
     @Override
     @PostMapping

@@ -1,6 +1,7 @@
 package com.tourplanner.backend.service.report;
 
-import com.tourplanner.backend.service.dto.tour.TourResponseDTO;
+import com.tourplanner.backend.service.util.Util;
+import com.tourplanner.backend.service.dto.tour.TourDTO;
 import com.tourplanner.backend.service.dto.tourLog.TourLogDTO;
 import com.tourplanner.backend.service.impl.TourServiceImpl;
 import com.tourplanner.backend.service.s3.S3FileUploadService;
@@ -42,11 +43,19 @@ public class TourReportGenerator extends ReportGenerator {
         return context;
     }
 
-    private TourResponseDTO getTourData() {
-        return tourService.findById(tourID);
+    private TourDTO getTourData() {
+        TourDTO tour = tourService.findById(tourID);
+        tour.setDistance(Util.roundToTwoDecimalPlaces(tour.getDistance() / 1000));
+        tour.setEstimatedTime(Util.roundToNearestInt(tour.getEstimatedTime() / 60));
+
+        return tour;
     }
 
     private List<TourLogDTO> getTourLogData() {
-        return tourService.getAllTourLogsForThisTour(tourID);
+        List<TourLogDTO> tourLogs = tourService.getAllTourLogsForThisTour(tourID);
+        tourLogs.forEach(tourLog -> tourLog.setDistance(Util.roundToTwoDecimalPlaces(tourLog.getDistance() / 1000)));
+        tourLogs.forEach(tourLog -> tourLog.setTotalTime(Util.roundToNearestInt(tourLog.getTotalTime() / 60)));
+
+        return tourLogs;
     }
 }

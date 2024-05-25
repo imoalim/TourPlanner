@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 public class ReportService {
 
     private final TourReportGenerator tourReportGenerator;
+
     private final SummarizeReportGenerator summarizeReportGenerator;
 
     public ReportResponseDTO generateTourReport(Long tourId) {

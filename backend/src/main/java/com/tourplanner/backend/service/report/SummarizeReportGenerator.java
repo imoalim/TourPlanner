@@ -1,10 +1,11 @@
 package com.tourplanner.backend.service.report;
 
 import com.tourplanner.backend.service.dto.report.SummaryDTO;
-import com.tourplanner.backend.service.dto.tour.TourResponseDTO;
+import com.tourplanner.backend.service.dto.tour.TourDTO;
 import com.tourplanner.backend.service.dto.tourLog.TourLogDTO;
 import com.tourplanner.backend.service.impl.TourServiceImpl;
 import com.tourplanner.backend.service.s3.S3FileUploadService;
+import com.tourplanner.backend.service.util.Util;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
 
@@ -34,39 +35,35 @@ public class SummarizeReportGenerator extends ReportGenerator {
     @Override
     protected Context setContext() {
         Context context = new Context();
-        List<TourResponseDTO> allTours = getAllTours();
+        List<TourDTO> allTours = getAllTours();
         context.setVariable("tours", allTours);
         context.setVariable("summaries", allTours.stream().map(this::calculateAverages).collect(Collectors.toList()));
 
         return context;
     }
 
-    private List<TourResponseDTO> getAllTours() {
+    private List<TourDTO> getAllTours() {
         return tourService.findAll();
     }
 
-    private SummaryDTO calculateAverages(TourResponseDTO tour) {
+    private SummaryDTO calculateAverages(TourDTO tour) {
         List<TourLogDTO> tourLogs = tourService.getAllTourLogsForThisTour(tour.getId());
 
-        double averageDistance = roundToTwoDecimalPlaces(tourLogs.stream()
+        double averageDistance = Util.roundToTwoDecimalPlaces(tourLogs.stream()
                 .mapToDouble(TourLogDTO::getDistance)
                 .average()
                 .orElse(0) / 1000);
 
-        double averageTime = roundToTwoDecimalPlaces(tourLogs.stream()
+        double averageTime = Util.roundToNearestInt(tourLogs.stream()
                 .mapToDouble(TourLogDTO::getTotalTime)
                 .average()
-                .orElse(0) / 3600);
+                .orElse(0) / 60);
 
-        double averageRating = roundToTwoDecimalPlaces(tourLogs.stream()
+        double averageRating = Util.roundToTwoDecimalPlaces(tourLogs.stream()
                 .mapToDouble(TourLogDTO::getRating)
                 .average()
                 .orElse(0));
 
         return new SummaryDTO(tour.getName(), averageDistance, averageTime, averageRating);
-    }
-
-    private double roundToTwoDecimalPlaces(double value) {
-        return Math.round(value * 100.0) / 100.0;
     }
 }

@@ -15,7 +15,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class TourLogServiceImpl implements GenericService<TourLogDTO, TourLogDTO, Long> {
+public class TourLogServiceImpl implements GenericService<TourLogDTO, Long> {
 
     private final TourLogRepository tourLogRepository;
 

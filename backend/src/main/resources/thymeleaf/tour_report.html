@@ -35,9 +35,8 @@
     <p><strong>From:</strong> <span th:text="${tour.fromLocation}">From Location</span></p>
     <p><strong>To:</strong> <span th:text="${tour.toLocation}">To Location</span></p>
     <p><strong>Transport Type:</strong> <span th:text="${tour.transportType}">Transport Type</span></p>
-    <p><strong>Distance:</strong> <span th:text="${tour.distance}">Distance</span> m</p>
-    <p><strong>Estimated Time:</strong> <span th:text="${tour.estimatedTime}">Estimated Time</span> s</p>
-    <p><strong>Image:</strong> <img th:src="${tour.imageUrl}" alt="Tour Image" style="width: 100px; height: auto;"/></p>
+    <p><strong>Distance:</strong> <span th:text="${tour.distance}">Distance</span> km</p>
+    <p><strong>Estimated Time:</strong> <span th:text="${tour.estimatedTime}">Estimated Time</span> min</p>
     <p><strong>Popularity:</strong> <span th:text="${tour.popularity}">Popularity</span></p>
     <p><strong>Child Friendliness:</strong> <span th:text="${tour.childFriendliness}">Child Friendliness</span></p>
 </div>
@@ -49,8 +48,8 @@
         <th>Date and Time</th>
         <th>Comment</th>
         <th>Difficulty</th>
-        <th>Distance (m)</th>
-        <th>Total Time (s)</th>
+        <th>Distance (km)</th>
+        <th>Total Time (min)</th>
         <th>Rating</th>
     </tr>
     </thead>
@@ -62,8 +61,8 @@
         <td th:text="${#temporals.format(log.dateTime, 'dd/MM/yyyy HH:mm')}">Date & Time</td>
         <td th:text="${log.comment}">Comment</td>
         <td th:text="${log.difficulty}">Difficulty</td>
-        <td th:text="${log.distance}">Distance (m)</td>
-        <td th:text="${log.totalTime}">Total Time (s)</td>
+        <td th:text="${log.distance}">Distance (km)</td>
+        <td th:text="${log.totalTime}">Total Time (min)</td>
         <td th:text="${log.rating}">Rating</td>
     </tr>
     </tbody>
