@@ -8,7 +8,6 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.InputStream;
-import java.nio.file.Path;
 
 @Service
 @RequiredArgsConstructor
@@ -16,18 +15,8 @@ public class S3FileUploadService {
 
     private final S3Client s3Client;
 
-    @Value("${aws.s3.bucketName}")
+    @Value("${AWS_S3_BUCKET}")
     private String bucketName;
-
-    public String uploadFileToS3(Path file, String filename) {
-        s3Client.putObject(PutObjectRequest.builder()
-                        .bucket(bucketName)
-                        .key(filename)
-                        .build(),
-                RequestBody.fromFile(file));
-
-        return s3Client.utilities().getUrl(builder -> builder.bucket(bucketName).key(filename)).toExternalForm();
-    }
 
     public String uploadFileToS3(InputStream dataStream, String filename, long contentLength) {
         s3Client.putObject(PutObjectRequest.builder()

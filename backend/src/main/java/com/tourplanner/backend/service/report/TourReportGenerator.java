@@ -1,83 +1,52 @@
 package com.tourplanner.backend.service.report;
 
-import com.tourplanner.backend.service.dto.tourLog.TourLogDTO;
 import com.tourplanner.backend.service.dto.tour.TourResponseDTO;
+import com.tourplanner.backend.service.dto.tourLog.TourLogDTO;
 import com.tourplanner.backend.service.impl.TourServiceImpl;
 import com.tourplanner.backend.service.s3.S3FileUploadService;
-import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.stereotype.Component;
-import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-import org.thymeleaf.templatemode.TemplateMode;
-import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
-import org.xhtmlrenderer.pdf.ITextRenderer;
 
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
+@Setter
 @Component
-@RequiredArgsConstructor
-public class TourReportGenerator{
+public class TourReportGenerator extends ReportGenerator {
 
-    private final TourServiceImpl tourService;
+    private Long tourID;
 
-    private final S3FileUploadService s3FileUploadService;
+    public TourReportGenerator(S3FileUploadService s3FileUploadService, TourServiceImpl tourService) {
+        super(s3FileUploadService, tourService);
+    }
 
-    protected String generateReport(Long tourId) {
-        String fileName = generateUniqueFileName(tourId);
-        String htmlContent = parseThymeleafTemplateTour(tourId);
+    @Override
+    public String generateReport() {
+        String fileName = generateUniqueFileName();
+        String htmlContent = parseThymeleafTemplate("thymeleaf/tour_report.html");
         return generatePdf(htmlContent, fileName);
     }
 
-    private String generateUniqueFileName(Long tourId) {
-        String timeStamp = new java.text.SimpleDateFormat("yyyyMMddHHmmss").format(new java.util.Date());
-        return "TourReport_" + tourId + "_" + timeStamp + ".pdf";
+    @Override
+    protected String generateUniqueFileName() {
+        String timeStamp = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new java.util.Date());
+        return "TourReport_" + tourID + "_" + timeStamp + ".pdf";
     }
 
-    private String parseThymeleafTemplateTour(Long tourId) {
-        ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
-        templateResolver.setSuffix(".html");
-        templateResolver.setTemplateMode(TemplateMode.HTML);
-
-        TemplateEngine templateEngine = new TemplateEngine();
-        templateEngine.setTemplateResolver(templateResolver);
-
+    @Override
+    protected Context setContext() {
         Context context = new Context();
-        context.setVariable("tour", getTourData(tourId));
-        context.setVariable("tour_logs", getTourLogData(tourId));
+        context.setVariable("tour", getTourData());
+        context.setVariable("tour_logs", getTourLogData());
 
-        return templateEngine.process("thymeleaf/tour_report", context);
+        return context;
     }
 
-    protected String generatePdf(String html, String fileName) {
-        Path outputPath = Paths.get(System.getProperty("java.io.tmpdir"), fileName);
-        try (OutputStream outputStream = new FileOutputStream(outputPath.toFile())) {
-            ITextRenderer renderer = new ITextRenderer();
-            renderer.setDocumentFromString(html);
-            renderer.layout();
-            renderer.createPDF(outputStream);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to generate PDF", e);
-        }
-
-        try {
-            String fileUrl = s3FileUploadService.uploadFileToS3(outputPath, fileName);
-            Files.deleteIfExists(outputPath);  // Clean up the temporary file
-            return fileUrl;
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to upload PDF to S3", e);
-        }
+    private TourResponseDTO getTourData() {
+        return tourService.findById(tourID);
     }
 
-    private TourResponseDTO getTourData(Long tourId) {
-        return tourService.findById(tourId);
-    }
-
-    private List<TourLogDTO> getTourLogData(Long tourId) {
-        return tourService.getAllTourLogsForThisTour(tourId);
+    private List<TourLogDTO> getTourLogData() {
+        return tourService.getAllTourLogsForThisTour(tourID);
     }
 }

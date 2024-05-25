@@ -17,12 +17,12 @@ public class ReportController {
     private final ReportService reportService;
 
     @GetMapping("/tours/{id}/report")
-    public ResponseEntity<ReportResponseDTO> getTourReport(@PathVariable Long id) throws Exception {
+    public ResponseEntity<ReportResponseDTO> getTourReport(@PathVariable Long id) {
         return ResponseEntity.ok(reportService.generateTourReport(id));
     }
 
     @GetMapping("/tours/summarize-report")
-    public ResponseEntity<ReportResponseDTO> getSummarizeReport() throws Exception {
+    public ResponseEntity<ReportResponseDTO> getSummarizeReport() {
         return ResponseEntity.ok(reportService.generateSummarizeReport());
     }
 }

@@ -30,7 +30,6 @@
 
 <div class="tour-info">
     <h2>Tour Details</h2>
-    <p><strong>ID:</strong> <span th:text="${tour.id}">Tour ID</span></p>
     <p><strong>Name:</strong> <span th:text="${tour.name}">Tour Name</span></p>
     <p><strong>Description:</strong> <span th:text="${tour.description}">Description</span></p>
     <p><strong>From:</strong> <span th:text="${tour.fromLocation}">From Location</span></p>
@@ -47,12 +46,11 @@
 <table>
     <thead>
     <tr>
-        <th>ID</th>
         <th>Date and Time</th>
         <th>Comment</th>
         <th>Difficulty</th>
-        <th>Distance (km)</th>
-        <th>Total Time (hours)</th>
+        <th>Distance (m)</th>
+        <th>Total Time (s)</th>
         <th>Rating</th>
     </tr>
     </thead>
@@ -61,7 +59,6 @@
         <td colspan="7">No logs available</td>
     </tr>
     <tr th:each="log : ${tour_logs}">
-        <td th:text="${log.id}">Log ID</td>
         <td th:text="${#temporals.format(log.dateTime, 'dd/MM/yyyy HH:mm')}">Date & Time</td>
         <td th:text="${log.comment}">Comment</td>
         <td th:text="${log.difficulty}">Difficulty</td>

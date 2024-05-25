@@ -8,23 +8,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class ReportService {
 
-    //private final AbstractReportGenerator reportGenerator;
     private final TourReportGenerator tourReportGenerator;
     private final SummarizeReportGenerator summarizeReportGenerator;
 
-    public ReportResponseDTO generateTourReport(Long tourId) throws Exception {
-        String reportURL = tourReportGenerator.generateReport(tourId);
+    public ReportResponseDTO generateTourReport(Long tourId) {
+        tourReportGenerator.setTourID(tourId);
+        String reportURL = tourReportGenerator.generateReport();
         return ReportResponseDTO.builder()
                 .reportURL(reportURL)
                 .build();
     }
 
-    public ReportResponseDTO generateSummarizeReport() throws Exception {
+    public ReportResponseDTO generateSummarizeReport() {
         String reportURL = summarizeReportGenerator.generateReport();
         return ReportResponseDTO.builder()
                 .reportURL(reportURL)
                 .build();
     }
-
-
 }
