@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Simple Map</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        #mapid { width: 100vw; height: 100vh; position: absolute; top: 0; left: 0;}
+        .start-icon {
+            background-color: green;
+            border-radius: 50%;
+            width: 12px;
+            height: 12px;
+        }
+        .end-icon {
+            background-color: red;
+            border-radius: 50%;
+            width: 12px;
+            height: 12px;
+        }
+    </style>
+</head>
+<body>
+<div id="mapid"></div>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    let startPoint = [ /*[[${startLat}]]*/, /*[[${startLng}]]*/ ];
+    let endPoint = [ /*[[${endLat}]]*/, /*[[${endLng}]]*/ ];
+    let centerPoint = [ /*[[${centerLat}]]*/, /*[[${centerLng}]]*/ ];
+    let route = /*[[${route}]]*/ '[]';
+    route = JSON.parse(route);
+    console.log(route);
+
+    let map = L.map('mapid').setView(centerPoint, 14);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap'
+    }).addTo(map);
+
+    // var startPoint = [48.240029, 16.377636];
+    // var endPoint = [48.220334, 16.393058];
+    // var route = [
+    //     [48.240029, 16.377636], [48.23964, 16.378008], [48.238603, 16.379185], [48.238546, 16.379086],
+    //     [48.23846, 16.378913], [48.238368, 16.378716], [48.238345, 16.378667], [48.238316, 16.378606],
+    //     [48.238292, 16.378553], [48.238205, 16.378385], [48.238147, 16.378272], [48.238093, 16.378167],
+    //     [48.237624, 16.378695], [48.237416, 16.378893], [48.236907, 16.379489], [48.236076, 16.38043],
+    //     [48.235577, 16.380986], [48.235203, 16.381405], [48.234213, 16.382541], [48.233904, 16.382906],
+    //     [48.233742, 16.383035], [48.233497, 16.383309], [48.233427, 16.383418], [48.233504, 16.383559],
+    //     [48.233537, 16.383626], [48.233731, 16.384002], [48.23377, 16.384078], [48.233797, 16.384132],
+    //     [48.233806, 16.384151], [48.234022, 16.384569], [48.234406, 16.385308], [48.234745, 16.38598],
+    //     [48.23507, 16.386622], [48.235372, 16.387227], [48.235755, 16.387993], [48.236091, 16.388686],
+    //     [48.236347, 16.389207], [48.236047, 16.389561], [48.234794, 16.391045], [48.234294, 16.391636],
+    //     [48.233505, 16.39257], [48.232039, 16.394292], [48.231824, 16.394549], [48.231588, 16.394821],
+    //     [48.230449, 16.396177], [48.230266, 16.396397], [48.230165, 16.396519], [48.229885, 16.396857],
+    //     [48.22935, 16.397485], [48.229102, 16.397779], [48.228831, 16.3981], [48.228699, 16.398252],
+    //     [48.228011, 16.399043], [48.227791, 16.399293], [48.227694, 16.399408], [48.22747, 16.399675],
+    //     [48.227307, 16.399869], [48.226234, 16.401146], [48.225951, 16.401452], [48.22533, 16.400348],
+    //     [48.224742, 16.401056], [48.224475, 16.401382], [48.224122, 16.40181], [48.223314, 16.400308],
+    //     [48.223253, 16.400242], [48.222835, 16.399456], [48.222549, 16.398878], [48.222452, 16.398721],
+    //     [48.22107, 16.396168], [48.220954, 16.395954], [48.22077, 16.395615], [48.221176, 16.395142],
+    //     [48.221944, 16.394217], [48.22164, 16.393663], [48.22143, 16.393282], [48.221292, 16.393096],
+    //     [48.221183, 16.393029], [48.221064, 16.393004], [48.220927, 16.393009], [48.220455, 16.393085],
+    //     [48.220334, 16.393058]
+    // ];
+
+    if (route.length > 0) {
+        let polyline = L.polyline(route, {color: 'blue'}).addTo(map);
+        map.fitBounds(polyline.getBounds());
+    } else {
+        console.error("No route data available to display on the map");
+    }
+
+    let startIcon = L.divIcon({className: 'start-icon'});
+    let endIcon = L.divIcon({className: 'end-icon'});
+
+    let startMarker = L.marker(startPoint, {icon: startIcon}).addTo(map).bindPopup("Start Point");
+    let endMarker = L.marker(endPoint, {icon: endIcon}).addTo(map).bindPopup("End Point");
+    /*]]>*/
+</script>
+<h1>Hello there!</h1>
+</body>
+</html>

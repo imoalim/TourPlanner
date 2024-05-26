@@ -2,6 +2,7 @@ package com.tourplanner.backend.service.dto.tour;
 
 import com.tourplanner.backend.persistence.attributes.tour.ChildFriendliness;
 import com.tourplanner.backend.persistence.attributes.tour.Popularity;
+import com.tourplanner.backend.service.dto.map.MapInfoDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,7 +21,7 @@ public class TourDTO {
     private String transportType;
     private Double distance;
     private Double estimatedTime;
-    private String imageUrl;
+    private MapInfoDTO mapInfoDTO;
     private Popularity popularity;
     private ChildFriendliness childFriendliness;
 }

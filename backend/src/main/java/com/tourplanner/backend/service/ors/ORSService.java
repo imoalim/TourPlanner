@@ -1,11 +1,11 @@
 package com.tourplanner.backend.service.ors;
 
-import com.tourplanner.backend.service.s3.S3FileUploadService;
+import com.tourplanner.backend.service.dto.map.MapInfoDTO;
 import com.tourplanner.backend.service.util.Util;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -13,25 +13,47 @@ import java.util.Map;
 public class ORSService {
 
     private final RouteDetailsRetriever routeDetailsRetriever;
-    private final GeocodeRetriever geocodeRetriever;
-    private final S3FileUploadService s3FileUploadService;
 
-    public OrsParameters getOrsParameters(String fromLocation, String toLocation, String transportType) throws IOException {
-        Map<String, Double> parameters = routeDetailsRetriever.parseRouteDetails(fromLocation, toLocation, transportType);
-        String imageURL = getImageURL(fromLocation, toLocation);
+    public OrsParameters getOrsParameters(String fromLocation, String toLocation, String transportType) {
+        routeDetailsRetriever.setProperties(fromLocation, toLocation, transportType);
+        routeDetailsRetriever.getOrsRouteDetails();
+        Map<String, Double> parameters = routeDetailsRetriever.parseRouteDetails();
+        List<double[]> route = routeDetailsRetriever.getWayPoints();
 
-        return new OrsParameters(parameters.get("distance"), parameters.get("duration"), imageURL);
+        double[] center = calculateMapCenter(route);
+
+        MapInfoDTO mapInfoDTO = MapInfoDTO.builder()
+                .startLat(route.get(0)[0])
+                .startLng(route.get(0)[1])
+                .endLat(route.get(route.size() - 1)[0])
+                .endLng(route.get(route.size() - 1)[1])
+                .centerLat(center[0])
+                .centerLng(center[1])
+                .route(Util.formatRouteForJs(route))
+                .build();
+
+        return new OrsParameters(parameters.get("distance"), parameters.get("duration"), mapInfoDTO);
     }
 
-    private String getImageURL(String fromLocation, String toLocation) throws IOException {
-        double[] fromCoordinates = Util.stringArrayToDoubleArray(geocodeRetriever.getBbox(fromLocation));
-        double[] toCoordinates = Util.stringArrayToDoubleArray(geocodeRetriever.getBbox(toLocation));
+    private double[] calculateMapCenter(List<double[]> routeCoordinates) {
+        double minLat = Double.MAX_VALUE;
+        double maxLat = Double.MIN_VALUE;
+        double minLng = Double.MAX_VALUE;
+        double maxLng = Double.MIN_VALUE;
 
-        double[] bbox = MapCreator.calculateBoundingBox(fromCoordinates, toCoordinates);
+        for (double[] coords : routeCoordinates) {
+            double lat = coords[0];
+            double lng = coords[1];
 
-        MapCreator mapCreator = new MapCreator(bbox[0], bbox[1], bbox[2], bbox[3], s3FileUploadService);
+            if (lat < minLat) minLat = lat;
+            if (lat > maxLat) maxLat = lat;
+            if (lng < minLng) minLng = lng;
+            if (lng > maxLng) maxLng = lng;
+        }
 
-        mapCreator.generateImage();
-        return mapCreator.saveImageToS3();
+        double centerLat = (minLat + maxLat) / 2;
+        double centerLng = (minLng + maxLng) / 2;
+
+        return new double[]{centerLat, centerLng};
     }
 }

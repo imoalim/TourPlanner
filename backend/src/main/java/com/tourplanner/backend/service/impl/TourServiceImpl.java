@@ -2,12 +2,14 @@ package com.tourplanner.backend.service.impl;
 
 import com.tourplanner.backend.persistence.attributes.tour.ChildFriendliness;
 import com.tourplanner.backend.persistence.attributes.tour.Popularity;
+import com.tourplanner.backend.persistence.entity.MapInfo;
 import com.tourplanner.backend.persistence.entity.Tour;
 import com.tourplanner.backend.persistence.entity.TourLog;
 import com.tourplanner.backend.persistence.repository.TourRepository;
 import com.tourplanner.backend.service.GenericService;
-import com.tourplanner.backend.service.dto.tourLog.TourLogDTO;
+import com.tourplanner.backend.service.dto.map.MapInfoDTO;
 import com.tourplanner.backend.service.dto.tour.TourDTO;
+import com.tourplanner.backend.service.dto.tourLog.TourLogDTO;
 import com.tourplanner.backend.service.mapper.TourLogMapper;
 import com.tourplanner.backend.service.mapper.TourMapper;
 import com.tourplanner.backend.service.ors.ORSService;
@@ -16,7 +18,6 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -38,12 +39,19 @@ public class TourServiceImpl implements GenericService<TourDTO, Long> {
 
     @Override
     public TourDTO create(TourDTO tourRequestDTO) {
-        OrsParameters orsParameters;
-        try {
-            orsParameters = orsService.getOrsParameters(tourRequestDTO.getFromLocation(), tourRequestDTO.getToLocation(), tourRequestDTO.getTransportType());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        OrsParameters orsParameters = orsService.getOrsParameters(tourRequestDTO.getFromLocation(), tourRequestDTO.getToLocation(), tourRequestDTO.getTransportType());
+        MapInfoDTO mapInfoDTO = orsParameters.mapInfoDTO();
+
+        MapInfo mapInfo = MapInfo.builder()
+                .startLat(mapInfoDTO.getStartLat())
+                .startLng(mapInfoDTO.getStartLng())
+                .endLat(mapInfoDTO.getEndLat())
+                .endLng(mapInfoDTO.getEndLng())
+                .centerLat(mapInfoDTO.getCenterLat())
+                .centerLng(mapInfoDTO.getCenterLng())
+                .route(mapInfoDTO.getRoute())
+                .build();
+
         Tour tour = Tour.builder()
                 .name(tourRequestDTO.getName())
                 .description(tourRequestDTO.getDescription())
@@ -52,7 +60,7 @@ public class TourServiceImpl implements GenericService<TourDTO, Long> {
                 .transportType(tourRequestDTO.getTransportType())
                 .distance(orsParameters.distance())
                 .estimatedTime(orsParameters.estimatedTime())
-                .imageUrl(orsParameters.imageUrl())
+                .mapInfo(mapInfo)
                 .popularity(Popularity.UNKNOWN)
                 .childFriendliness(ChildFriendliness.UNKNOWN)
                 .build();
@@ -67,10 +75,6 @@ public class TourServiceImpl implements GenericService<TourDTO, Long> {
 
     @Override
     public TourDTO findById(Long id) {
-        // Using Optional.map to convert the found Tour into a TourDTO, if present.
-        // orElseThrow is used to throw an exception if the Tour is not found.
-        checkIfTourExist(id);
-
         return tourRepository.findById(id)
                 .map(tourMapper::mapToDto)
                 .orElseThrow(() -> new EntityNotFoundException("Tour not found for id " + id));
@@ -84,7 +88,6 @@ public class TourServiceImpl implements GenericService<TourDTO, Long> {
 
     @Override
     public TourDTO update(Long id, TourDTO tourRequestDTO) {
-        checkIfTourExist(id);
         // Retrieve the existing tour from the database
         Tour existingTour = tourRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Tour not found for id " + id));
@@ -96,16 +99,23 @@ public class TourServiceImpl implements GenericService<TourDTO, Long> {
         existingTour.setToLocation(tourRequestDTO.getToLocation());
         existingTour.setTransportType(tourRequestDTO.getTransportType());
 
-        OrsParameters orsParameters;
-        try {
-            orsParameters = orsService.getOrsParameters(tourRequestDTO.getFromLocation(), tourRequestDTO.getToLocation(), tourRequestDTO.getTransportType());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        OrsParameters orsParameters = orsService.getOrsParameters(tourRequestDTO.getFromLocation(), tourRequestDTO.getToLocation(), tourRequestDTO.getTransportType());
 
         existingTour.setDistance(orsParameters.distance());
         existingTour.setEstimatedTime(orsParameters.estimatedTime());
-        existingTour.setImageUrl(orsParameters.imageUrl());
+
+        MapInfo mapInfo = existingTour.getMapInfo();
+        if (mapInfo == null) {
+            mapInfo = new MapInfo();
+            existingTour.setMapInfo(mapInfo);
+        }
+        mapInfo.setStartLat(orsParameters.mapInfoDTO().getStartLat());
+        mapInfo.setStartLng(orsParameters.mapInfoDTO().getStartLng());
+        mapInfo.setEndLat(orsParameters.mapInfoDTO().getEndLat());
+        mapInfo.setEndLng(orsParameters.mapInfoDTO().getEndLng());
+        mapInfo.setCenterLat(orsParameters.mapInfoDTO().getCenterLat());
+        mapInfo.setCenterLng(orsParameters.mapInfoDTO().getCenterLng());
+        mapInfo.setRoute(orsParameters.mapInfoDTO().getRoute());
 
         // Save the updated tour back to the database
         tourRepository.save(existingTour);

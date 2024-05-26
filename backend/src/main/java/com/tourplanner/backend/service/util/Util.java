@@ -1,6 +1,8 @@
 package com.tourplanner.backend.service.util;
 
+import java.util.List;
 import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 public class Util {
 
@@ -26,5 +28,11 @@ public class Util {
 
     public static double roundToNearestInt(double value) {
         return Math.round(value);
+    }
+
+    public static String formatRouteForJs(List<double[]> route) {
+        return route.stream()
+                .map(coords -> "[" + coords[0] + ", " + coords[1] + "]")
+                .collect(Collectors.joining(", ", "[", "]"));
     }
 }

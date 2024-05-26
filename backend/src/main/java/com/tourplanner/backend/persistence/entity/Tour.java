@@ -28,7 +28,10 @@ public class Tour {
     private String transportType;
     private Double distance;
     private Double estimatedTime;
-    private String imageUrl;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "map_info_id")
+    private MapInfo mapInfo;
 
     @Enumerated(EnumType.STRING)
     private Popularity popularity;

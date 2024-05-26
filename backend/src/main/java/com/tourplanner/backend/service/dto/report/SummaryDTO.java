@@ -8,6 +8,6 @@ import lombok.Data;
 public class SummaryDTO {
     private String tourName;
     private double averageDistance; // in km
-    private double averageTime;     // in hours
+    private double averageTime;     // in min
     private double averageRating;
 }

@@ -1,6 +1,5 @@
 package com.tourplanner.backend.service.ors;
 
-import com.tourplanner.backend.service.util.Util;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -23,42 +22,47 @@ public class RouteDetailsRetriever {
 
     private final RestTemplate restTemplate;
 
-    public List<double[]> getWayPoints(String fromLocation, String toLocation, String transportType) {
-        String orsRouteResponse = getOrsRouteDetails(fromLocation, toLocation, transportType);
+    private String fromLocation;
+    private String toLocation;
+    private String transportType;
+    private JSONObject orsRouteData;
+
+    public void setProperties(String fromLocation, String toLocation, String transportType) {
+        this.fromLocation = fromLocation;
+        this.toLocation = toLocation;
+        this.transportType = transportType;
+    }
+
+    public List<double[]> getWayPoints() {
         List<double[]> wayPoints = new ArrayList<>();
 
-        JSONObject orsRoute = new JSONObject(orsRouteResponse);
-        JSONArray routeCoordinates = orsRoute.getJSONArray("features").getJSONObject(0).getJSONObject("geometry").getJSONArray("coordinates");
+        JSONArray routeCoordinates = orsRouteData.getJSONArray("features").getJSONObject(0).getJSONObject("geometry").getJSONArray("coordinates");
 
         // Swapping longitude and latitude for each coordinate
         for (int i = 0; i < routeCoordinates.length(); i++) {
             JSONArray coord = routeCoordinates.getJSONArray(i);
             double longitude = coord.getDouble(0);
             double latitude = coord.getDouble(1);
-            wayPoints.add(new double[]{longitude, latitude});
+            wayPoints.add(new double[]{latitude, longitude});
         }
         return wayPoints;
     }
 
-    public Map<String, Double> parseRouteDetails(String fromLocation, String toLocation, String transportType) {
-        String orsRouteResponse = getOrsRouteDetails(fromLocation, toLocation, transportType);
-        JSONObject orsRouteData = new JSONObject(orsRouteResponse);
+    public Map<String, Double> parseRouteDetails() {
         JSONObject summary = orsRouteData.getJSONArray("features").getJSONObject(0).getJSONObject("properties").getJSONObject("summary");
         double distance = summary.getDouble("distance");
         double duration = summary.getDouble("duration");
         return Map.of("distance", distance, "duration", duration);
     }
 
-    private String getOrsRouteDetails(String fromLocation, String toLocation, String transportType) {
-        String[] startCoordinates = geocodeRetriever.getCoordinates(fromLocation);
-        String[] endCoordinates = geocodeRetriever.getCoordinates(toLocation);
+    public void getOrsRouteDetails() {
+        String startCoordinates = geocodeRetriever.getCoordinates(fromLocation);
+        String endCoordinates = geocodeRetriever.getCoordinates(toLocation);
 
-        String start = Util.joinStrings(startCoordinates);
-        String end = Util.joinStrings(endCoordinates);
-        return restTemplate.getForEntity(
+        orsRouteData = new JSONObject(restTemplate.getForEntity(
                 "https://api.openrouteservice.org/v2/directions/" + transportType + "?api_key=" + api_key +
-                        "&start=" + start +
-                        "&end=" + end,
-                String.class).getBody();
+                        "&start=" + startCoordinates +
+                        "&end=" + endCoordinates,
+                String.class).getBody());
     }
 }
