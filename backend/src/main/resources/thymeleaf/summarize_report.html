@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Summary Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+<h1>Summary Report for All Tours</h1>
+<table>
+    <thead>
+    <tr>
+        <th>Tour Name</th>
+        <th>Average Distance (km)</th>
+        <th>Average Time (min)</th>
+        <th>Average Rating</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="summary : ${summaries}">
+        <td th:text="${summary.tourName}"></td>
+        <td th:text="${summary.averageDistance}"></td>
+        <td th:text="${summary.averageTime}"></td>
+        <td th:text="${summary.averageRating}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Tour Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .tour-info {
+            margin: 20px;
+            padding: 10px;
+            background-color: #f0f0f0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+<h1 style="text-align: center;">Tour Report</h1>
+
+<div class="tour-info">
+    <h2>Tour Details</h2>
+    <p><strong>Name:</strong> <span th:text="${tour.name}">Tour Name</span></p>
+    <p><strong>Description:</strong> <span th:text="${tour.description}">Description</span></p>
+    <p><strong>From:</strong> <span th:text="${tour.fromLocation}">From Location</span></p>
+    <p><strong>To:</strong> <span th:text="${tour.toLocation}">To Location</span></p>
+    <p><strong>Transport Type:</strong> <span th:text="${tour.transportType}">Transport Type</span></p>
+    <p><strong>Distance:</strong> <span th:text="${tour.distance}">Distance</span> km</p>
+    <p><strong>Estimated Time:</strong> <span th:text="${tour.estimatedTime}">Estimated Time</span> min</p>
+    <p><strong>Popularity:</strong> <span th:text="${tour.popularity}">Popularity</span></p>
+    <p><strong>Child Friendliness:</strong> <span th:text="${tour.childFriendliness}">Child Friendliness</span></p>
+</div>
+
+<h2>Tour Logs</h2>
+<table>
+    <thead>
+    <tr>
+        <th>Date and Time</th>
+        <th>Comment</th>
+        <th>Difficulty</th>
+        <th>Distance (km)</th>
+        <th>Total Time (min)</th>
+        <th>Rating</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${tour_logs.isEmpty()}">
+        <td colspan="7">No logs available</td>
+    </tr>
+    <tr th:each="log : ${tour_logs}">
+        <td th:text="${#temporals.format(log.dateTime, 'dd/MM/yyyy HH:mm')}">Date & Time</td>
+        <td th:text="${log.comment}">Comment</td>
+        <td th:text="${log.difficulty}">Difficulty</td>
+        <td th:text="${log.distance}">Distance (km)</td>
+        <td th:text="${log.totalTime}">Total Time (min)</td>
+        <td th:text="${log.rating}">Rating</td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

@@ -1,25 +1,18 @@
-package com.tourplanner.backend.persistence.entity;
+package com.tourplanner.backend.service.dto.tour;
 
 import com.tourplanner.backend.persistence.attributes.tour.ChildFriendliness;
 import com.tourplanner.backend.persistence.attributes.tour.Popularity;
-import jakarta.persistence.*;
+import com.tourplanner.backend.service.dto.map.MapInfoDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
-
-@Entity
-@Table(name = "Tour")
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class Tour {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+@NoArgsConstructor
+public class TourDTO {
     private Long id;
     private String name;
     private String description;
@@ -28,17 +21,7 @@ public class Tour {
     private String transportType;
     private Double distance;
     private Double estimatedTime;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "map_info_id")
-    private MapInfo mapInfo;
-
-    @Enumerated(EnumType.STRING)
+    private MapInfoDTO mapInfoDTO;
     private Popularity popularity;
-
-    @Enumerated(EnumType.STRING)
     private ChildFriendliness childFriendliness;
-
-    @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<TourLog> logs = new ArrayList<>();
 }

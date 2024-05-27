@@ -1,13 +1,11 @@
 package com.tourplanner.backend.service.mapper;
 
 import com.tourplanner.backend.persistence.entity.Tour;
-import com.tourplanner.backend.service.dto.TourDTO;
+import com.tourplanner.backend.service.dto.tour.TourDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.time.Duration;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TourMapperTest {
 
@@ -29,7 +27,7 @@ class TourMapperTest {
                 .toLocation("Riverside Park")
                 .transportType("Bike")
                 .distance(5.0)
-                .estimatedTime(Duration.parse("PT1H"))
+                .estimatedTime(3600.00)
                 .imageUrl("https://example.com/path/to/image")
                 .build();
 

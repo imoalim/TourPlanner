@@ -2,10 +2,10 @@ package com.tourplanner.backend.service;
 
 import java.util.List;
 
-public interface GenericService<T, ID> {
-    T create(T dto);
-    List<T> findAll();
-    List<T> findById(ID id);
+public interface GenericService<DTO, ID> {
+    DTO create(DTO dto);
+    List<DTO> findAll();
+    DTO findById(ID id);
     void deleteById(ID id);
-    T update(ID id, T dto);
+    DTO update(ID id, DTO dto);
 }

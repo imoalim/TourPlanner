@@ -2,7 +2,7 @@ package com.tourplanner.backend.controller.impl;
 
 import com.tourplanner.backend.controller.GenericController;
 import com.tourplanner.backend.service.GenericService;
-import com.tourplanner.backend.service.dto.TourLogDTO;
+import com.tourplanner.backend.service.dto.tourLog.TourLogDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +18,7 @@ public class TourLogController implements GenericController<TourLogDTO, Long> {
 
     @Override
     @PostMapping
-    public ResponseEntity<Void> create(@RequestBody TourLogDTO tourLogDTO) {
+    public ResponseEntity<TourLogDTO> create(@RequestBody TourLogDTO tourLogDTO) {
         tourLogService.create(tourLogDTO);
         return ResponseEntity.ok().build();
     }
@@ -31,7 +31,7 @@ public class TourLogController implements GenericController<TourLogDTO, Long> {
 
     @Override
     @GetMapping("/{id}")
-    public ResponseEntity<List<TourLogDTO>> findById(@PathVariable Long id) {
+    public ResponseEntity<TourLogDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok(tourLogService.findById(id));
     }
 

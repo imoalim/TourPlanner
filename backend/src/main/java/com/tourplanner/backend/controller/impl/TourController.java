@@ -1,8 +1,9 @@
 package com.tourplanner.backend.controller.impl;
 
 import com.tourplanner.backend.controller.GenericController;
-import com.tourplanner.backend.service.dto.TourDTO;
-import com.tourplanner.backend.service.GenericService;
+import com.tourplanner.backend.service.dto.tourLog.TourLogDTO;
+import com.tourplanner.backend.service.dto.tour.TourDTO;
+import com.tourplanner.backend.service.impl.TourServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,13 +15,13 @@ import java.util.List;
 @RequestMapping("/api/v1/tours")
 public class TourController implements GenericController<TourDTO, Long> {
 
-    private final GenericService<TourDTO, Long> tourService;
+    private final TourServiceImpl tourService;
 
     @Override
     @PostMapping
-    public ResponseEntity<Void> create(@RequestBody TourDTO tourDTO) {
-        tourService.create(tourDTO);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<TourDTO> create(@RequestBody TourDTO tourRequestDTO) {
+        TourDTO createdTour = tourService.create(tourRequestDTO);
+        return ResponseEntity.ok(createdTour);
     }
 
     @Override
@@ -31,7 +32,7 @@ public class TourController implements GenericController<TourDTO, Long> {
 
     @Override
     @GetMapping("/{id}")
-    public ResponseEntity<List<TourDTO>> findById(@PathVariable Long id) {
+    public ResponseEntity<TourDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok(tourService.findById(id));
     }
 
@@ -44,8 +45,13 @@ public class TourController implements GenericController<TourDTO, Long> {
 
     @Override
     @PutMapping("/{id}")
-    public ResponseEntity<TourDTO> update(@PathVariable Long id, @RequestBody TourDTO tourDTO) {
-        TourDTO updatedTour = tourService.update(id, tourDTO);
+    public ResponseEntity<TourDTO> update(@PathVariable Long id, @RequestBody TourDTO tourRequestDTO) {
+        TourDTO updatedTour = tourService.update(id, tourRequestDTO);
         return ResponseEntity.ok(updatedTour);
+    }
+
+    @GetMapping("/{id}/tourLogs")
+    public ResponseEntity<List<TourLogDTO>> findAllTourLogsForThisTour(@PathVariable Long id) {
+        return ResponseEntity.ok(tourService.getAllTourLogsForThisTour(id));
     }
 }
