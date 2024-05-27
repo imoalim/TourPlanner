@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { HttpProviderService } from '../Service/http-provider.service';
+import * as $ from 'jquery'; // Import jQuery
+import 'bootstrap'; // Import Bootstrap for tooltips
 
 @Component({
   selector: 'ng-modal-confirm',
@@ -47,13 +49,14 @@ export class HomeComponent implements OnInit {
     console.log("HomeComponent initialized");
     this.getAllTour();
   }
+
   async getAllTour() {
     this.httpProvider.getAllTours().subscribe((data: any) => {
         if (data != null && data.body != null) {
           var resultData = data.body;
           if (resultData) {
             this.tourList = resultData;
-            console.log("Tours loaded:", this.tourList); // Fügen Sie diese Zeile hinzu
+            console.log("Tours loaded:", this.tourList);
           }
         }
       },
@@ -62,33 +65,50 @@ export class HomeComponent implements OnInit {
       });
   }
 
-
   AddTour() {
     this.router.navigate(['AddTour']);
   }
 
-  deleteTourConfirmation(tour: any) {
-    // Hier könnten Sie eine Modal-Dialog für die Bestätigung öffnen
+  viewTour(tourId: number) {
+    this.router.navigate([`/TourDetails/${tourId}`]);
+  }
+
+  editTour(event: Event, tourId: number) {
+    event.stopPropagation();
+    this.router.navigate([`/EditTour/${tourId}`]);
+  }
+
+  deleteTourConfirmation(event: Event, tour: any) {
+    event.stopPropagation();
     const modalRef = this.modalService.open(NgModalConfirm);
     modalRef.result.then((result) => {
       if (result === 'Ok click') {
         this.deleteTour(tour.id);
       }
-    }, (reason) => {
-      // Handle dismiss
-    });
+    }, (reason) => {});
   }
 
   deleteTour(tourId: number) {
     this.httpProvider.deleteTourById(tourId).subscribe({
       next: (response) => {
         this.toastr.success('Tour successfully deleted');
-        this.getAllTour(); // Aktualisieren der Liste nach dem Löschen
+        this.getAllTour();
       },
       error: (err) => {
         this.toastr.error('Error deleting tour');
         console.error(err);
       }
     });
+  }
+//if user hovers through the tour
+  showTooltip(event: MouseEvent) {
+    const element = event.currentTarget as HTMLElement;
+    $(element).tooltip({ title: 'Click tour to view more details', placement: 'top', trigger: 'hover' });
+    $(element).tooltip('show');
+  }
+
+  hideTooltip(event: MouseEvent) {
+    const element = event.currentTarget as HTMLElement;
+    $(element).tooltip('hide');
   }
 }

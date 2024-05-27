@@ -6,43 +6,43 @@
           <div class="col-sm-6">
             <h4><b>Manage Tours</b></h4>
           </div>
-          <div class="col-sm-6 text-end">
+          <div class="col-sm-6">
             <button class="btn btn-success" (click)="AddTour()">
-              <i class="fas fa-plus-circle"></i> ADD
+              <i class='fas fa-plus-circle'></i><span> ADD</span>
             </button>
           </div>
         </div>
       </div>
-      <table class="table table-striped table-hover table-bordered">
+      <table class="table table-striped table-hover table-bordered table-content">
         <thead>
-        <tr>
-          <th>Name</th>
-          <th>Description</th>
-          <th>Location From</th>
-          <th>Location To</th>
-          <th>Transport Type</th>
-          <th>Actions</th>
-        </tr>
+          <tr class="center-align">
+            <th>Name</th>
+            <th>Description</th>
+            <th>Location From</th>
+            <th>Location To</th>
+            <th>Transport Type</th>
+            <th>Actions</th>
+          </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let tour of tourList">
-          <td>{{ tour.name }}</td>
-          <td>{{ tour.description }}</td>
-          <td>{{ tour.fromLocation }}</td>
-          <td>{{ tour.toLocation }}</td>
-          <td>{{ tour.transportType }}</td>
-          <td class="text-center">
-            <button class="btn btn-primary btn-sm me-1" [routerLink]="['/EditTour/', tour.id]">
-              <i class="fa fa-edit"></i> Edit
-            </button>
-            <button class="btn btn-danger btn-sm" (click)="deleteTourConfirmation(tour)">
-              <i class="fas fa-trash-alt"></i> Delete
-            </button>
-          </td>
-        </tr>
-        <tr *ngIf="tourList.length === 0">
-          <td colspan="6" class="text-center">No Tours Found</td>
-        </tr>
+          <tr *ngFor="let tour of tourList" class="center-align" (click)="viewTour(tour.id)" (mouseenter)="showTooltip($event)" (mouseleave)="hideTooltip($event)">
+            <td>{{ tour.name }}</td>
+            <td>{{ tour.description }}</td>
+            <td>{{ tour.fromLocation }}</td>
+            <td>{{ tour.toLocation }}</td>
+            <td>{{ tour.transportType }}</td>
+            <td>
+              <button class="btn btn-primary" (click)="editTour($event, tour.id)">
+                <i class="fa fa-edit"></i> Update
+              </button>
+              <button class="btn btn-danger" (click)="deleteTourConfirmation($event, tour)">
+                <i class='fas fa-trash-alt'></i> Delete
+              </button>
+            </td>
+          </tr>
+          <tr>
+            <td *ngIf="tourList.length === 0" colspan="6">No Tours Found</td>
+          </tr>
         </tbody>
       </table>
     </div>
