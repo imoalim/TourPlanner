@@ -35,6 +35,8 @@ public class TourLogServiceImpl implements GenericService<TourLogDTO, Long> {
         Tour tour = tourRepository.findById(tourLogDTO.getTourId())
                 .orElseThrow(() -> new EntityNotFoundException("Tour not found for id " + tourLogDTO.getTourId()));
 
+
+
         TourLog tourLog = TourLog.builder()
                 .dateTime(tourLogDTO.getDateTime())
                 .comment(tourLogDTO.getComment())
@@ -44,6 +46,11 @@ public class TourLogServiceImpl implements GenericService<TourLogDTO, Long> {
                 .rating(tourLogDTO.getRating())
                 .tour(tour)
                 .build();
+
+        // Ensure distance is not null
+        if (tourLog.getDistance() == null) {
+            tourLog.setDistance(0.0); // or any other default value or throw an exception
+        }
 
         tourLog = tourLogRepository.save(tourLog);
         tourServiceImpl.updateComputedTourAttributes(tour.getId());

@@ -1,0 +1,21 @@
+<div class="card mt-4">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <h2 class="mb-0">Tour Logs</h2>
+    <button class="btn btn-success" (click)="createLog()">Create New Log</button>
+  </div>
+  <div class="card-body">
+    <div *ngIf="tourLogs.length === 0" class="alert alert-warning">No logs available for this tour.</div>
+    <div *ngFor="let log of tourLogs" class="card mb-3">
+      <div class="card-body">
+        <p><strong>Date/Time:</strong> {{ log.dateTime }}</p>
+        <p><strong>Comment:</strong> {{ log.comment }}</p>
+        <p><strong>Difficulty:</strong> {{ log.difficulty }}</p>
+        <p><strong>Total Distance:</strong> {{ log.totalDistance }} km</p>
+        <p><strong>Total Time:</strong> {{ log.totalTime }} mins</p>
+        <p><strong>Rating:</strong> {{ log.rating }}</p>
+        <button class="btn btn-danger" (click)="deleteTourLog(log.id)">Delete Log</button>
+        <button class="btn btn-primary" (click)="editLog(log.id)">Edit</button>
+      </div>
+    </div>
+  </div>
+</div>

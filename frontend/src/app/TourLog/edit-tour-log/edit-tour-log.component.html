@@ -1,0 +1,30 @@
+<div class="update-tour-log">
+  <h2>Update Tour Log</h2>
+  <form #form="ngForm" (ngSubmit)="updateTourLog(form)">
+    <div>
+      <label for="dateTime">Date/Time</label>
+      <input type="datetime-local" id="dateTime" [(ngModel)]="tourLog.dateTime" name="dateTime" required />
+    </div>
+    <div>
+      <label for="comment">Comment</label>
+      <input type="text" id="comment" [(ngModel)]="tourLog.comment" name="comment" required />
+    </div>
+    <div>
+      <label for="difficulty">Difficulty</label>
+      <input type="text" id="difficulty" [(ngModel)]="tourLog.difficulty" name="difficulty" required />
+    </div>
+    <div>
+      <label for="totalDistance">Total Distance</label>
+      <input type="number" id="totalDistance" [(ngModel)]="tourLog.totalDistance" name="totalDistance" required />
+    </div>
+    <div>
+      <label for="totalTime">Total Time</label>
+      <input type="number" id="totalTime" [(ngModel)]="tourLog.totalTime" name="totalTime" required />
+    </div>
+    <div>
+      <label for="rating">Rating</label>
+      <input type="number" id="rating" [(ngModel)]="tourLog.rating" name="rating" required />
+    </div>
+    <button type="submit">Update</button>
+  </form>
+</div>
