@@ -3,7 +3,11 @@ package com.tourplanner.backend.persistence.entity;
 import com.tourplanner.backend.persistence.attributes.tour.ChildFriendliness;
 import com.tourplanner.backend.persistence.attributes.tour.Popularity;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
