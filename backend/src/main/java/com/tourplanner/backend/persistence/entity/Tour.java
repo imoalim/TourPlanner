@@ -3,10 +3,7 @@ package com.tourplanner.backend.persistence.entity;
 import com.tourplanner.backend.persistence.attributes.tour.ChildFriendliness;
 import com.tourplanner.backend.persistence.attributes.tour.Popularity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +28,7 @@ public class Tour {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "map_info_id")
+    @ToString.Exclude
     private MapInfo mapInfo;
 
     @Enumerated(EnumType.STRING)
@@ -40,5 +38,6 @@ public class Tour {
     private ChildFriendliness childFriendliness;
 
     @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
     private List<TourLog> logs = new ArrayList<>();
 }

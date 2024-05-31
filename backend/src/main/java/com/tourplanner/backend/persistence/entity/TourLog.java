@@ -2,10 +2,7 @@ package com.tourplanner.backend.persistence.entity;
 
 import com.tourplanner.backend.persistence.attributes.tourLog.Difficulty;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -31,5 +28,6 @@ public class TourLog {
 
     @ManyToOne
     @JoinColumn(name = "tour_id", nullable = false)
+    @ToString.Exclude
     private Tour tour;
 }
