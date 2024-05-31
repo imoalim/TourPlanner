@@ -61,7 +61,7 @@ export class TourLogForm {
   dateTime: string = "";
   comment: string = "";
   difficulty: string = "";
-  totalDistance: number = 0;
+  distance: number = 0;
   totalTime: number = 0;
   rating: number = 0;
   tourId: number = 0;

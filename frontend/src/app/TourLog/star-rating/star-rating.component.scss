@@ -1,7 +1,14 @@
 .star-rating {
-  .fa {
-    font-size: 2rem;
-    color: gold;
-    cursor: pointer;
+  display: inline-block;
+  font-size: 2rem;
+  color: #d3d3d3;
+  cursor: pointer;
+
+  .star {
+    transition: color 0.2s;
+
+    &.filled {
+      color: #ffca28;
+    }
   }
 }

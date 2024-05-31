@@ -1,6 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { HttpProviderService } from '../../Service/http-provider.service';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+
 
 @Component({
   selector: 'app-tour-log-list',
@@ -19,6 +21,7 @@ export class TourLogListComponent implements OnInit {
 
   loadTourLogs() {
     this.httpProvider.getAllTourLogs().subscribe((data: any) => {
+      console.log(data.body)
       this.tourLogs = data.body.filter((log: any) => log.tourId === this.tourId);
     });
   }

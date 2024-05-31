@@ -12,17 +12,17 @@ export class StarRatingComponent {
 
   constructor() {}
 
-  ngOnInit() {
-    this.updateStars();
+  ngOnInit(): void {
+    this.calculateStars();
   }
 
-  updateStars() {
-    this.stars = this.stars.map((_, i) => i < this.rating);
+  calculateStars() {
+    this.stars = this.stars.map((_, index) => index < this.rating);
   }
 
-  rate(rating: number) {
-    this.rating = rating;
-    this.updateStars();
+  onStarClick(index: number) {
+    this.rating = index + 1;
     this.ratingChange.emit(this.rating);
+    this.calculateStars();
   }
 }

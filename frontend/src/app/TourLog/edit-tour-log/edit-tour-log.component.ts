@@ -25,10 +25,10 @@ export class EditTourLogComponent implements OnInit {
     });
   }
 
-  updateTourLog(form: NgForm) {
-    if (form.valid) {
+  updateTourLog(tourLogForm: NgForm) {
+    if (tourLogForm.valid) {
       this.httpProvider.updateTourLogById(this.logId, this.tourLog).subscribe(() => {
-        this.router.navigate(['/tour-details', this.tourLog.tourId]);
+        this.router.navigate(['/TourDetails', this.tourLog.tourId]);
       });
     }
   }
