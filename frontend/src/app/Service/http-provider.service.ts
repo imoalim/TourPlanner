@@ -5,11 +5,21 @@ import { WebApiService } from './web-api.service';
 var apiUrl = "http://localhost:8080/";
 
 var httpLink = {
-  getAllTours: apiUrl + "api/v1/tours",
-  getTourbyId: apiUrl + "api/v1/tours",
-  deleteTourById: apiUrl + "api/v1/tours",
-  updateTourbyId: apiUrl + "api/v1/tours",
-  createTour: apiUrl + "api/v1/tours",
+   tour : {
+    getAll: apiUrl + "api/v1/tours",
+    getById: apiUrl + "api/v1/tours",
+    deleteById: apiUrl + "api/v1/tours",
+    updateById: apiUrl + "api/v1/tours",
+    create: apiUrl + "api/v1/tours",
+  },
+  tourLog: {
+    getAll: apiUrl + "api/v1/tourLogs",
+    getById: apiUrl + "api/v1/tourLogs",
+    deleteById: apiUrl + "api/v1/tourLogs",
+    updateById: apiUrl + "api/v1/tourLogs",
+    create: apiUrl + "api/v1/tourLogs",
+  }
+
 }
 
 @Injectable({
@@ -18,20 +28,39 @@ var httpLink = {
 
 export class HttpProviderService {
   constructor(private webApiService: WebApiService) { }
+  //crud for tour
 
   public getAllTours(): Observable<any> {
-    return this.webApiService.get(httpLink.getAllTours);
+    return this.webApiService.get(httpLink.tour.getAll);
   }
   public getTourbyId(id: number): Observable<any> {
-    return this.webApiService.get(`${httpLink.getTourbyId}/${id}`);
+    return this.webApiService.get(`${httpLink.tour.getById}/${id}`);
   }
   public deleteTourById(id: number): Observable<any> {
-    return this.webApiService.delete(`${httpLink.deleteTourById}/${id}`);
+    return this.webApiService.delete(`${httpLink.tour.deleteById}/${id}`);
   }
   public updateTourbyId(id: number, model: any): Observable<any> {
-    return this.webApiService.put(`${httpLink.updateTourbyId}/${id}`, model);
+    return this.webApiService.put(`${httpLink.tour.updateById}/${id}`, model);
   }
   public createTour(model: any): Observable<any> {
-    return this.webApiService.post(httpLink.createTour, model);
+    return this.webApiService.post(httpLink.tour.create, model);
   }
+
+//crud for tourLog
+public getAllTourLogs(): Observable<any> {
+  return this.webApiService.get(httpLink.tourLog.getAll);
+}
+public getTourLogById(id: number): Observable<any> {
+  return this.webApiService.get(`${httpLink.tourLog.getById}/${id}`);
+}
+public deleteTourLogById(id: number): Observable<any> {
+  return this.webApiService.delete(`${httpLink.tourLog.deleteById}/${id}`);
+}
+public updateTourLogById(id: number, model: any): Observable<any> {
+  return this.webApiService.put(`${httpLink.tourLog.updateById}/${id}`, model);
+}
+public createTourLog(model: any): Observable<any> {
+  return this.webApiService.post(httpLink.tourLog.create, model);
+}
+
 }

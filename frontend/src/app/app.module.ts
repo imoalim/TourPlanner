@@ -11,6 +11,11 @@ import { ViewTourComponent } from './Tour/view-tour/view-tour.component';
 import { HttpClientModule } from '@angular/common/http';
 import { HomeComponent } from './home/home.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AddTourLogComponent } from './TourLog/add-tour-log/add-tour-log.component';
+import { EditTourLogComponent } from './TourLog/edit-tour-log/edit-tour-log.component';
+import { TourLogListComponent } from './TourLog/tour-log-list/tour-log-list.component';
+import { TourDetailsComponent } from './Tour/tour-details/tour-details.component';
+import { StarRatingComponent } from './TourLog/star-rating/star-rating.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +23,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     HomeComponent,
     AddTourComponent,
     EditTourComponent,
-    ViewTourComponent
+    ViewTourComponent,
+    TourDetailsComponent,
+    AddTourLogComponent,
+    EditTourLogComponent,
+    TourLogListComponent,
+    StarRatingComponent
   ],
   imports: [
     BrowserModule,
