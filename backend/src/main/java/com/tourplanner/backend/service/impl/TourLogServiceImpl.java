@@ -35,8 +35,6 @@ public class TourLogServiceImpl implements GenericService<TourLogDTO, Long> {
         Tour tour = tourRepository.findById(tourLogDTO.getTourId())
                 .orElseThrow(() -> new EntityNotFoundException("Tour not found for id " + tourLogDTO.getTourId()));
 
-
-
         TourLog tourLog = TourLog.builder()
                 .dateTime(tourLogDTO.getDateTime())
                 .comment(tourLogDTO.getComment())
@@ -75,8 +73,9 @@ public class TourLogServiceImpl implements GenericService<TourLogDTO, Long> {
     @Override
     public void deleteById(Long tourLogId) {
         checkIfTourLogExist(tourLogId);
-        tourServiceImpl.updateComputedTourAttributes(getTourIDFromTourLogID(tourLogId));
+        Long tourID = getTourIDFromTourLogID(tourLogId);
         tourLogRepository.deleteById(tourLogId);
+        tourServiceImpl.updateComputedTourAttributes(tourID);
     }
 
     @Override

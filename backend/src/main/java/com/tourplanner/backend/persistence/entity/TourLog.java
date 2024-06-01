@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
@@ -31,5 +32,6 @@ public class TourLog {
 
     @ManyToOne
     @JoinColumn(name = "tour_id", nullable = false)
+    @ToString.Exclude
     private Tour tour;
 }

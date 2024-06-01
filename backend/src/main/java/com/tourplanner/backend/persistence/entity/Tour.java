@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +32,7 @@ public class Tour {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "map_info_id")
+    @ToString.Exclude
     private MapInfo mapInfo;
 
     @Enumerated(EnumType.STRING)
@@ -40,5 +42,6 @@ public class Tour {
     private ChildFriendliness childFriendliness;
 
     @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
     private List<TourLog> logs = new ArrayList<>();
 }
