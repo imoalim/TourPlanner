@@ -1,5 +1,6 @@
 package com.tourplanner.backend;
 
+import com.tourplanner.backend.service.util.EnvLoader;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -12,14 +13,7 @@ import java.util.List;
 public class BackendApplication {
 
 	public static void main(String[] args) {
-		try {
-			List<String> lines = Files.readAllLines(Paths.get(".env"));
-			lines.stream()
-					.map(line -> line.split("="))
-					.forEach(parts -> System.setProperty(parts[0], parts[1]));
-		} catch (IOException e) {
-			System.out.println("Error parsing env variables: " + e);
-		}
+		EnvLoader.loadEnvVariables();
 		SpringApplication.run(BackendApplication.class, args);
 	}
 }
