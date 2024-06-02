@@ -18,8 +18,8 @@ public class ORSService {
         routeDetailsRetriever.setProperties(fromLocation, toLocation, transportType);
         routeDetailsRetriever.getOrsRouteDetails();
         Map<String, Double> parameters = routeDetailsRetriever.parseRouteDetails();
-        List<double[]> route = routeDetailsRetriever.getWayPoints();
 
+        List<double[]> route = routeDetailsRetriever.getWayPoints();
         double[] center = calculateMapCenter(route);
 
         MapInfoDTO mapInfoDTO = MapInfoDTO.builder()

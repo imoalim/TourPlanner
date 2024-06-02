@@ -4,6 +4,7 @@ import com.tourplanner.backend.controller.GenericController;
 import com.tourplanner.backend.service.dto.tourLog.TourLogDTO;
 import com.tourplanner.backend.service.dto.tour.TourDTO;
 import com.tourplanner.backend.service.impl.TourServiceImpl;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,8 +20,9 @@ public class TourController implements GenericController<TourDTO, Long> {
 
     @Override
     @PostMapping
-    public ResponseEntity<TourDTO> create(@RequestBody TourDTO tourRequestDTO) {
+    public ResponseEntity<TourDTO> create(@Valid @RequestBody TourDTO tourRequestDTO) {
         TourDTO createdTour = tourService.create(tourRequestDTO);
+        System.out.println(createdTour);
         return ResponseEntity.ok(createdTour);
     }
 
@@ -45,7 +47,7 @@ public class TourController implements GenericController<TourDTO, Long> {
 
     @Override
     @PutMapping("/{id}")
-    public ResponseEntity<TourDTO> update(@PathVariable Long id, @RequestBody TourDTO tourRequestDTO) {
+    public ResponseEntity<TourDTO> update(@PathVariable Long id, @Valid @RequestBody TourDTO tourRequestDTO) {
         TourDTO updatedTour = tourService.update(id, tourRequestDTO);
         return ResponseEntity.ok(updatedTour);
     }
