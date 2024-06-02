@@ -11,7 +11,11 @@
     </div>
     <div class="form-group">
       <label for="difficulty">Difficulty</label>
-      <input type="text" id="difficulty" class="form-control" [(ngModel)]="tourLog.difficulty" name="difficulty" required />
+      <select id="difficulty" class="form-control" [(ngModel)]="tourLog.difficulty" name="difficulty" required>
+        <option value="EASY">Easy</option>
+        <option value="MODERATE">Moderate</option>
+        <option value="HARD">Hard</option>
+      </select>
     </div>
     <div class="form-group">
       <label for="totalDistance">Total Distance (km)</label>

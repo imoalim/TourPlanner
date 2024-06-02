@@ -61,10 +61,12 @@
               <label for="transportType" class="p-t-b-10">Transport Type<span class="requiredStar">*</span></label>
             </div>
             <div class="col-sm-9">
-              <input type="text" class="form-control" id="transportType" required maxlength="255" [(ngModel)]="editTourForm.transportType" name="transportType" #transportType="ngModel">
-              <div *ngIf="transportType.errors && isSubmitted" class="alert alert-danger validationError">
-                <div [hidden]="!transportType.errors?.['required']">Transport Type is required</div>
-              </div>
+              <label for="transportType">Transport Type</label>
+              <select id="transportType" class="form-control" [(ngModel)]="editTourForm.transportType" name="transportType" required>
+                <option value="driving-car">Driving Car</option>
+                <option value="cycling-regular">Cycling Regular</option>
+                <option value="foot-walking">Foot Walking</option>
+              </select>
             </div>
           </div>
         </div>

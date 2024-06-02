@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Type } from '@angular/core';
+import { Component, OnInit, Pipe, PipeTransform } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
@@ -24,45 +24,36 @@ import 'bootstrap'; // Import Bootstrap for tooltips
   </div>
   `,
 })
-
 export class NgModalConfirm {
   constructor(public modal: NgbActiveModal) { }
 }
-
-const MODALS: { [name: string]: Type<any> } = {
-  deleteModal: NgModalConfirm,
-};
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-
 export class HomeComponent implements OnInit {
   closeResult = '';
   tourList: any = [];
+  searchText: string = '';
+
   constructor(private router: Router, private modalService: NgbModal,
-              private toastr: ToastrService, private httpProvider : HttpProviderService) { }
+              private toastr: ToastrService, private httpProvider: HttpProviderService) { }
 
   ngOnInit(): void {
-    console.log("HomeComponent initialized");
     this.getAllTour();
   }
 
-  async getAllTour() {
+  getAllTour() {
     this.httpProvider.getAllTours().subscribe((data: any) => {
-        if (data != null && data.body != null) {
-          var resultData = data.body;
-          if (resultData) {
-            this.tourList = resultData;
-            console.log("Tours loaded:", this.tourList);
-          }
-        }
-      },
-      (error: any) => {
-        console.error("Error loading tours:", error);
-      });
+      if (data != null && data.body != null) {
+        this.tourList = data.body;
+      }
+    },
+    (error: any) => {
+      console.error("Error loading tours:", error);
+    });
   }
 
   AddTour() {
@@ -100,7 +91,7 @@ export class HomeComponent implements OnInit {
       }
     });
   }
-//if user hovers through the tour
+
   showTooltip(event: MouseEvent) {
     const element = event.currentTarget as HTMLElement;
     $(element).tooltip({ title: 'Click tour to view more details', placement: 'top', trigger: 'hover' });
@@ -110,5 +101,19 @@ export class HomeComponent implements OnInit {
   hideTooltip(event: MouseEvent) {
     const element = event.currentTarget as HTMLElement;
     $(element).tooltip('hide');
+  }
+}
+
+@Pipe({
+  name: 'filter'
+})
+export class FilterPipe implements PipeTransform {
+  transform(items: any[], searchText: string): any[] {
+    if (!items) return [];
+    if (!searchText) return items;
+    searchText = searchText.toLowerCase();
+    return items.filter(it => {
+      return it.name.toLowerCase().includes(searchText);
+    });
   }
 }
