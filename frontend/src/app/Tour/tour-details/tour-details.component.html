@@ -14,6 +14,8 @@
           <p><strong>Child Friendliness:</strong> {{ tour?.childFriendliness }}</p>
           <p><strong>Popularity:</strong> {{ tour?.popularity }}</p>
           <button class="btn btn-primary" (click)="editTour()">Update Tour</button>
+          <button class="btn btn-secondary" (click)="fetchReportUrl()">Download Report</button>
+          <button class="btn btn-info" (click)="fetchSummaryReportUrl()">Download Summary</button>
         </div>
       </div>
     </div>

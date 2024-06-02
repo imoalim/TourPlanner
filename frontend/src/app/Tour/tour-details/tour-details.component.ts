@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpProviderService } from '../../Service/http-provider.service';
 import * as L from 'leaflet';
@@ -10,15 +10,20 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./tour-details.component.scss']
 })
 export class TourDetailsComponent implements OnInit {
-  tourId!: number;
   tour: any;
-  tourLogs: any[] = [];
+  tourId!: number;
+  reportUrl: string | undefined;
+  summaryReportUrl: string | undefined;
+
+  @ViewChild('downloadLink', { static: false }) downloadLink!: ElementRef;
+  @ViewChild('summaryDownloadLink', { static: false }) summaryDownloadLink!: ElementRef;
+  tourLogs: any;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private httpProvider: HttpProviderService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private httpProvider: HttpProviderService
   ) {}
 
   ngOnInit(): void {
@@ -78,5 +83,39 @@ export class TourDetailsComponent implements OnInit {
       this.toastr.success('Tour log deleted successfully');
       this.loadTourLogs();
     });
+  }
+
+  
+  fetchReportUrl() {
+    this.httpProvider.getReportUrl(this.tourId).subscribe((data: any) => {
+      this.reportUrl = data.body.reportURL;
+      if (this.reportUrl) {
+        this.triggerDownload(this.reportUrl);
+      } else {
+        this.toastr.error('Failed to fetch report URL.');
+      }
+    }, error => {
+      this.toastr.error('Error fetching report URL.');
+      console.error('Error fetching report URL:', error);
+    });
+  }
+
+  fetchSummaryReportUrl() {
+    this.httpProvider.getSummaryReportUrl().subscribe((data: any) => {
+      this.summaryReportUrl = data.body.reportURL;
+      console.log(this.summaryReportUrl)
+      if (this.summaryReportUrl) {
+        this.triggerDownload(this.summaryReportUrl);
+      } else {
+        this.toastr.error('Failed to fetch summary report URL.');
+      }
+    }, error => {
+      this.toastr.error('Error fetching summary report URL.');
+      console.error('Error fetching summary report URL:', error);
+    });
+  }
+
+  triggerDownload(url: string) {
+    window.open(url);
   }
 }
