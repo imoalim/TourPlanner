@@ -1,5 +1,6 @@
 package com.tourplanner.backend.controller;
 
+import com.tourplanner.backend.persistence.repository.TourRepository;
 import com.tourplanner.backend.service.dto.report.ReportResponseDTO;
 import com.tourplanner.backend.service.report.ReportService;
 import lombok.RequiredArgsConstructor;

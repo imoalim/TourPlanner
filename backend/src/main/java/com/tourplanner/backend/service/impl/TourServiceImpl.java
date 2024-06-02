@@ -10,6 +10,7 @@ import com.tourplanner.backend.service.GenericService;
 import com.tourplanner.backend.service.dto.map.MapInfoDTO;
 import com.tourplanner.backend.service.dto.tour.TourDTO;
 import com.tourplanner.backend.service.dto.tourLog.TourLogDTO;
+import com.tourplanner.backend.service.exception.ResourceNotFoundException;
 import com.tourplanner.backend.service.mapper.TourLogMapper;
 import com.tourplanner.backend.service.mapper.TourMapper;
 import com.tourplanner.backend.service.ors.ORSService;
@@ -32,9 +33,9 @@ public class TourServiceImpl implements GenericService<TourDTO, Long> {
 
     private final ORSService orsService;
 
-    void checkIfTourExist(Long id){
+    public void checkIfTourExist(Long id){
         if (!tourRepository.existsById(id))
-            throw new EntityNotFoundException("Tour not found for id " + id);
+            throw new ResourceNotFoundException("Tour not found for id " + id);
     }
 
     @Override
@@ -77,7 +78,7 @@ public class TourServiceImpl implements GenericService<TourDTO, Long> {
     public TourDTO findById(Long id) {
         return tourRepository.findById(id)
                 .map(tourMapper::mapToDto)
-                .orElseThrow(() -> new EntityNotFoundException("Tour not found for id " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Tour not found for id " + id));
     }
 
     @Override
@@ -90,7 +91,7 @@ public class TourServiceImpl implements GenericService<TourDTO, Long> {
     public TourDTO update(Long id, TourDTO tourRequestDTO) {
         // Retrieve the existing tour from the database
         Tour existingTour = tourRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Tour not found for id " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Tour not found for id " + id));
 
         // Update the existing tour's fields with the values from the DTO
         existingTour.setName(tourRequestDTO.getName());
@@ -132,7 +133,7 @@ public class TourServiceImpl implements GenericService<TourDTO, Long> {
 
     public void updateComputedTourAttributes(Long tourId) {
         Tour tour = tourRepository.findById(tourId)
-                .orElseThrow(() -> new EntityNotFoundException("Tour not found for id " + tourId));
+                .orElseThrow(() -> new ResourceNotFoundException("Tour not found for id " + tourId));
 
         List<TourLog> tourLogs = tour.getLogs();
 

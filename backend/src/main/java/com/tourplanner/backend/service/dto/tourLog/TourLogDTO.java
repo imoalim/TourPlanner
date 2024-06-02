@@ -1,6 +1,7 @@
 package com.tourplanner.backend.service.dto.tourLog;
 
 import com.tourplanner.backend.persistence.attributes.tourLog.Difficulty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,5 +21,6 @@ public class TourLogDTO {
     private Double distance;
     private Double totalTime;
     private Double rating;
+    @NotNull(message = "tourId cannot be null")
     private Long tourId;
 }

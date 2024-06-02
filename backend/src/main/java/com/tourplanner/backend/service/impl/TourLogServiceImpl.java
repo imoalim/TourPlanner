@@ -6,8 +6,8 @@ import com.tourplanner.backend.persistence.repository.TourLogRepository;
 import com.tourplanner.backend.persistence.repository.TourRepository;
 import com.tourplanner.backend.service.GenericService;
 import com.tourplanner.backend.service.dto.tourLog.TourLogDTO;
+import com.tourplanner.backend.service.exception.ResourceNotFoundException;
 import com.tourplanner.backend.service.mapper.TourLogMapper;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,13 +27,13 @@ public class TourLogServiceImpl implements GenericService<TourLogDTO, Long> {
 
     void checkIfTourLogExist(Long id){
         if (!tourLogRepository.existsById(id))
-            throw new EntityNotFoundException("TourLog not found for id " + id);
+            throw new ResourceNotFoundException("TourLog not found for id " + id);
     }
 
     @Override
     public TourLogDTO create(TourLogDTO tourLogDTO) {
         Tour tour = tourRepository.findById(tourLogDTO.getTourId())
-                .orElseThrow(() -> new EntityNotFoundException("Tour not found for id " + tourLogDTO.getTourId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Tour not found for id " + tourLogDTO.getTourId()));
 
         TourLog tourLog = TourLog.builder()
                 .dateTime(tourLogDTO.getDateTime())
@@ -47,7 +47,7 @@ public class TourLogServiceImpl implements GenericService<TourLogDTO, Long> {
 
         // Ensure distance is not null
         if (tourLog.getDistance() == null) {
-            tourLog.setDistance(0.0); // or any other default value or throw an exception
+            tourLog.setDistance(0.0);
         }
 
         tourLog = tourLogRepository.save(tourLog);
@@ -64,10 +64,9 @@ public class TourLogServiceImpl implements GenericService<TourLogDTO, Long> {
 
     @Override
     public TourLogDTO findById(Long id) {
-        checkIfTourLogExist(id);
         return tourLogRepository.findById(id)
                 .map(tourLogMapper::mapToDto)
-                .orElseThrow(() -> new EntityNotFoundException("TourLog not found for id " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("TourLog not found for id " + id));
     }
 
     @Override
@@ -81,12 +80,12 @@ public class TourLogServiceImpl implements GenericService<TourLogDTO, Long> {
     @Override
     public TourLogDTO update(Long id, TourLogDTO tourLogDTO) {
         TourLog existingTourLog = tourLogRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("TourLog not found for id " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("TourLog not found for id " + id));
 
         // Update the Tour, if the tourId in DTO is different
         if (!existingTourLog.getTour().getId().equals(tourLogDTO.getTourId())) {
             Tour tour = tourRepository.findById(tourLogDTO.getTourId())
-                    .orElseThrow(() -> new EntityNotFoundException("Tour not found for id " + tourLogDTO.getTourId()));
+                    .orElseThrow(() -> new ResourceNotFoundException("Tour not found for id " + tourLogDTO.getTourId()));
             existingTourLog.setTour(tour);
         }
 
@@ -105,7 +104,7 @@ public class TourLogServiceImpl implements GenericService<TourLogDTO, Long> {
 
     public Long getTourIDFromTourLogID(Long tourLogId) {
         TourLog tourLog = tourLogRepository.findById(tourLogId)
-                .orElseThrow(() -> new EntityNotFoundException("TourLog not found for tourLogId " + tourLogId));
+                .orElseThrow(() -> new ResourceNotFoundException("TourLog not found for tourLogId " + tourLogId));
 
         return tourLog.getTour().getId();
     }
