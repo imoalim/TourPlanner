@@ -1,12 +1,14 @@
 package com.tourplanner.backend.persistence.entity;
 
+import com.tourplanner.backend.persistence.attributes.tour.ChildFriendliness;
+import com.tourplanner.backend.persistence.attributes.tour.Popularity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,9 +28,20 @@ public class Tour {
     private String toLocation;
     private String transportType;
     private Double distance;
-    private Duration estimatedTime;
-    private String imageUrl;
+    private Double estimatedTime;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "map_info_id")
+    @ToString.Exclude
+    private MapInfo mapInfo;
+
+    @Enumerated(EnumType.STRING)
+    private Popularity popularity;
+
+    @Enumerated(EnumType.STRING)
+    private ChildFriendliness childFriendliness;
 
     @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
     private List<TourLog> logs = new ArrayList<>();
 }

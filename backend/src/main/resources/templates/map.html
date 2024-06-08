@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Simple Map</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        #mapid { width: 100vw; height: 100vh; position: absolute; top: 0; left: 0;}
+        .start-icon {
+            background-color: green;
+            border-radius: 50%;
+            width: 12px;
+            height: 12px;
+        }
+        .end-icon {
+            background-color: red;
+            border-radius: 50%;
+            width: 12px;
+            height: 12px;
+        }
+    </style>
+</head>
+<body>
+<div id="mapid"></div>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+    async function loadMapData() {
+        const response = await fetch('http://localhost:8080/api/v1/tours/802');
+        const mapData = await response.json();
+        const mapInfoDTO = mapData.mapInfoDTO;
+
+        let startPoint = [mapInfoDTO.startLat, mapInfoDTO.startLng];
+        let endPoint = [mapInfoDTO.endLat, mapInfoDTO.endLng];
+        let centerPoint = [mapInfoDTO.centerLat, mapInfoDTO.centerLng];
+        let route = JSON.parse(mapInfoDTO.route);
+
+        console.log("Start point: " + startPoint);
+        console.log("End point: " + endPoint);
+        console.log("Center point: " + centerPoint);
+        console.log("Route: " + JSON.stringify(route));
+
+        let map = L.map('mapid').setView(centerPoint, 14);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+
+        if (route.length > 0) {
+            let polyline = L.polyline(route, {color: 'blue'}).addTo(map);
+            map.fitBounds(polyline.getBounds());
+        } else {
+            console.error("No route data available to display on the map");
+        }
+
+        let startIcon = L.divIcon({className: 'start-icon'});
+        let endIcon = L.divIcon({className: 'end-icon'});
+
+        let startMarker = L.marker(startPoint, {icon: startIcon}).addTo(map).bindPopup("Start Point");
+        let endMarker = L.marker(endPoint, {icon: endIcon}).addTo(map).bindPopup("End Point");
+    }
+
+    document.addEventListener("DOMContentLoaded", loadMapData);
+</script>
+<h1>Hello there!</h1>
+</body>
+</html>

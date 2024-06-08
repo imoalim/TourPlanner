@@ -4,10 +4,10 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
-public interface GenericController<T, ID> {
-    ResponseEntity<Void> create(T dto);
-    ResponseEntity<List<T>> findAll();
-    ResponseEntity<List<T>> findById(ID id);
+public interface GenericController<DTO, ID> {
+    ResponseEntity<DTO> create(DTO dto);
+    ResponseEntity<List<DTO>> findAll();
+    ResponseEntity<DTO> findById(ID id);
     ResponseEntity<Void> deleteById(ID id);
-    ResponseEntity<T> update(ID id, T dto);
+    ResponseEntity<DTO> update(ID id, DTO dto);
 }

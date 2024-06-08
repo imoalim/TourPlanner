@@ -4,146 +4,137 @@ import com.tourplanner.backend.persistence.entity.Tour;
 import com.tourplanner.backend.persistence.entity.TourLog;
 import com.tourplanner.backend.persistence.repository.TourLogRepository;
 import com.tourplanner.backend.persistence.repository.TourRepository;
-import com.tourplanner.backend.service.dto.TourDTO;
-import com.tourplanner.backend.service.dto.TourLogDTO;
+import com.tourplanner.backend.service.dto.tourLog.TourLogDTO;
+import com.tourplanner.backend.service.exception.ResourceNotFoundException;
 import com.tourplanner.backend.service.mapper.TourLogMapper;
-import jakarta.persistence.EntityNotFoundException;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 class TourLogServiceImplTest {
 
-    @InjectMocks
-    private TourLogServiceImpl tourLogService;
-
-    // Dependencies
-    @Mock
-    private TourRepository tourRepository;
     @Mock
     private TourLogRepository tourLogRepository;
+
     @Mock
     private TourLogMapper tourLogMapper;
 
-    private static Tour tour;
-    private static TourDTO tourDTO;
-    private static TourLog tourLog;
-    private static TourLogDTO tourLogDTO;
+    @Mock
+    private TourRepository tourRepository;
 
-    private AutoCloseable closeable;
+    @Mock
+    private TourServiceImpl tourServiceImpl;
+
+    @InjectMocks
+    private TourLogServiceImpl tourLogServiceImpl;
+
+    private TourLog tourLog;
+    private TourLogDTO tourLogDTO;
+    private Tour tour;
 
     @BeforeEach
     void setUp() {
-        closeable = MockitoAnnotations.openMocks(this);
-
+        MockitoAnnotations.openMocks(this);
         tour = Tour.builder()
-                .name("Morning Bike Ride")
-                .description("A leisurely bike ride through the city parks.")
-                .fromLocation("Central Park")
-                .toLocation("Riverside Park")
-                .transportType("Bike")
-                .distance(5.0)
-                .estimatedTime(Duration.parse("PT1H"))
-                .imageUrl("https://example.com/path/to/image")
-                .build();
-
-        tourDTO = TourDTO.builder()
                 .id(1L)
-                .name("Morning Bike Ride")
-                .description("A leisurely bike ride through the city parks.")
-                .fromLocation("Central Park")
-                .toLocation("Riverside Park")
-                .transportType("Bike")
-                .distance(5.0)
-                .estimatedTime(Duration.parse("PT1H"))
-                .imageUrl("https://example.com/path/to/image")
+                .name("Test Tour")
                 .build();
-
         tourLog = TourLog.builder()
-                .dateTime(LocalDateTime.parse("2024-03-20T15:00:00"))
-                .comment("Beautiful scenery and a pleasant climb.")
-                .difficulty("Moderate")
-                .distance(12.5)
-                .totalTime(Duration.parse("PT5H30M"))
-                .rating(4.5)
+                .id(1L)
                 .tour(tour)
+                .comment("Test Comment")
                 .build();
-
         tourLogDTO = TourLogDTO.builder()
-                .dateTime(LocalDateTime.parse("2024-03-20T15:00:00"))
-                .comment("Beautiful scenery and a pleasant climb.")
-                .difficulty("Moderate")
-                .distance(12.5)
-                .totalTime(Duration.parse("PT5H30M"))
-                .rating(4.5)
-                .tourId(tour.getId())
+                .id(1L)
+                .tourId(1L)
+                .comment("Test Comment")
                 .build();
-    }
-
-    @AfterEach
-    void tearDown() throws Exception {
-        // Close the resources
-        closeable.close();
     }
 
     @Test
-    void shouldSaveTourLogSuccessfully() {
-        // Given
-        // Mock the calls
+    void createTourLog() {
         when(tourRepository.findById(tourLogDTO.getTourId())).thenReturn(Optional.of(tour));
         when(tourLogRepository.save(any(TourLog.class))).thenReturn(tourLog);
-        when(tourLogMapper.mapToDto(tourLog)).thenReturn(tourLogDTO);
+        when(tourLogMapper.mapToDto(any(TourLog.class))).thenReturn(tourLogDTO);
 
-        // When
-        TourLogDTO result = tourLogService.create(tourLogDTO);
+        TourLogDTO createdTourLog = tourLogServiceImpl.create(tourLogDTO);
 
-        // Then
-        assertNotNull(result);
-        assertEquals(tourLogDTO, result);
-        verify(tourRepository).findById(tourLogDTO.getTourId());
-        verify(tourLogRepository).save(any(TourLog.class));
+        assertEquals(tourLogDTO.getComment(), createdTourLog.getComment());
+        verify(tourLogRepository, times(1)).save(any(TourLog.class));
+        verify(tourServiceImpl, times(1)).updateComputedTourAttributes(tour.getId());
     }
 
     @Test
-    void shouldThrowExceptionWhenTourNotFound() {
-        // Given
-        when(tourRepository.findById(tourLogDTO.getTourId())).thenReturn(Optional.empty());
-
-        // When & Then
-        assertThrows(EntityNotFoundException.class, () -> tourLogService.create(tourLogDTO));
-        verify(tourRepository).findById(tourLogDTO.getTourId());
-    }
-
-    @Test
-    void shouldReturnAllTourLogs() {
-        // Given
-        List<TourLog> tourLogs = new ArrayList<>();
-        tourLogs.add(tourLog);
-        List<TourLogDTO> expectedTourLogDTOs = new ArrayList<>();
-        expectedTourLogDTOs.add(tourLogDTO);
-
+    void findAllTourLogs() {
+        List<TourLog> tourLogs = List.of(tourLog);
         when(tourLogRepository.findAll()).thenReturn(tourLogs);
-        when(tourLogMapper.mapToDto(tourLogs)).thenReturn(expectedTourLogDTOs);
+        when(tourLogMapper.mapToDto(anyList())).thenReturn(List.of(tourLogDTO));
 
-        // When
-        List<TourLogDTO> expectedResult = tourLogService.findAll();
+        List<TourLogDTO> foundTourLogs = tourLogServiceImpl.findAll();
 
-        // Then
-        assertNotNull(expectedResult);
-        assertEquals(expectedTourLogDTOs.size(), expectedResult.size());
-        assertEquals(expectedTourLogDTOs, expectedResult);
-        verify(tourLogRepository).findAll();
+        assertEquals(1, foundTourLogs.size());
+        verify(tourLogRepository, times(1)).findAll();
+    }
+
+    @Test
+    void findTourLogById() {
+        when(tourLogRepository.findById(1L)).thenReturn(Optional.of(tourLog));
+        when(tourLogMapper.mapToDto(any(TourLog.class))).thenReturn(tourLogDTO);
+
+        TourLogDTO foundTourLog = tourLogServiceImpl.findById(1L);
+
+        assertEquals(tourLogDTO.getComment(), foundTourLog.getComment());
+        verify(tourLogRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    void findTourLogByIdNotFound() {
+        when(tourLogRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> tourLogServiceImpl.findById(1L));
+        verify(tourLogRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    void updateTourLog() {
+        when(tourLogRepository.findById(1L)).thenReturn(Optional.of(tourLog));
+        when(tourRepository.findById(1L)).thenReturn(Optional.of(tour));
+        when(tourLogRepository.save(any(TourLog.class))).thenReturn(tourLog);
+        when(tourLogMapper.mapToDto(any(TourLog.class))).thenReturn(tourLogDTO);
+
+        TourLogDTO updatedTourLog = tourLogServiceImpl.update(1L, tourLogDTO);
+
+        assertEquals(tourLogDTO.getComment(), updatedTourLog.getComment());
+        verify(tourLogRepository, times(1)).findById(1L);
+        verify(tourLogRepository, times(1)).save(any(TourLog.class));
+        verify(tourServiceImpl, times(1)).updateComputedTourAttributes(tour.getId());
+    }
+
+    @Test
+    void deleteTourLog() {
+        when(tourLogRepository.existsById(1L)).thenReturn(true);
+        when(tourLogRepository.findById(1L)).thenReturn(Optional.of(tourLog));
+
+        tourLogServiceImpl.deleteById(1L);
+
+        verify(tourLogRepository, times(1)).deleteById(1L);
+        verify(tourServiceImpl, times(1)).updateComputedTourAttributes(tour.getId());
+    }
+
+    @Test
+    void deleteTourLogNotFound() {
+        when(tourLogRepository.existsById(1L)).thenReturn(false);
+
+        assertThrows(ResourceNotFoundException.class, () -> tourLogServiceImpl.deleteById(1L));
+        verify(tourLogRepository, times(1)).existsById(1L);
     }
 }

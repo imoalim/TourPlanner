@@ -1,0 +1,34 @@
+<div class="container mt-5">
+  <h1 class="text-center mb-4">Update Tour Log</h1>
+  <form #tourLogForm="ngForm" (ngSubmit)="updateTourLog(tourLogForm)" class="needs-validation" novalidate>
+    <div class="form-group">
+      <label for="dateTime">Date/Time</label>
+      <input type="datetime-local" id="dateTime" class="form-control" [(ngModel)]="tourLog.dateTime" name="dateTime" required />
+    </div>
+    <div class="form-group">
+      <label for="comment">Comment</label>
+      <input type="text" id="comment" class="form-control" [(ngModel)]="tourLog.comment" name="comment" required />
+    </div>
+    <div class="form-group">
+      <label for="difficulty">Difficulty</label>
+      <select id="difficulty" class="form-control" [(ngModel)]="tourLog.difficulty" name="difficulty" required>
+        <option value="EASY">Easy</option>
+        <option value="MODERATE">Moderate</option>
+        <option value="HARD">Hard</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="totalDistance">Total Distance (km)</label>
+      <input type="number" id="totalDistance" class="form-control" [(ngModel)]="tourLog.totalDistance" name="totalDistance" required />
+    </div>
+    <div class="form-group">
+      <label for="totalTime">Total Time (mins)</label>
+      <input type="number" id="totalTime" class="form-control" [(ngModel)]="tourLog.totalTime" name="totalTime" required />
+    </div>
+    <div class="form-group">
+      <label for="rating">Rating</label>
+      <app-star-rating [(rating)]="tourLog.rating"></app-star-rating>
+    </div>
+    <button type="submit" class="btn btn-primary">Update</button>
+  </form>
+</div>
